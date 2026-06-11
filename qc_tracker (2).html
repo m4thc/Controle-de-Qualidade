@@ -5,562 +5,918 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MBA GP — Painel de Estudos</title>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #181c27;
-    --surface2: #1e2333;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #e8eaf0;
-    --muted: #7a8099;
-    --accent: #5b6af0;
-    --accent-light: rgba(91,106,240,0.15);
-    --accent-glow: rgba(91,106,240,0.3);
-    --green: #22c98b;
-    --green-bg: rgba(34,201,139,0.12);
-    --amber: #f5a623;
-    --amber-bg: rgba(245,166,35,0.12);
-    --coral: #f06060;
-    --coral-bg: rgba(240,96,96,0.12);
-    --purple: #a78bfa;
-    --purple-bg: rgba(167,139,250,0.12);
-    --teal: #2dd4bf;
-    --teal-bg: rgba(45,212,191,0.12);
-    --radius: 10px;
-    --radius-lg: 14px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1e2333;
+  --surface3: #232840;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaf0;
+  --muted: #7a8099;
+  --accent: #5b6af0;
+  --accent-light: rgba(91,106,240,0.13);
+  --accent-glow: rgba(91,106,240,0.28);
+  --green: #22c98b;
+  --green-bg: rgba(34,201,139,0.12);
+  --green-border: rgba(34,201,139,0.25);
+  --red: #f06060;
+  --red-bg: rgba(240,96,96,0.12);
+  --red-border: rgba(240,96,96,0.25);
+  --amber: #f5a623;
+  --amber-bg: rgba(245,166,35,0.12);
+  --amber-border: rgba(245,166,35,0.25);
+  --purple: #a78bfa;
+  --purple-bg: rgba(167,139,250,0.12);
+  --teal: #2dd4bf;
+  --teal-bg: rgba(45,212,191,0.12);
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
 
-  /* LAYOUT */
-  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-  .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
-  .main { padding: 32px; overflow-y: auto; }
+.app { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
 
-  /* SIDEBAR */
-  .logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-  .logo-title { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; }
-  .logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .logo-badge { display: inline-block; background: var(--green-bg); color: var(--green); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 6px; border: 1px solid rgba(34,201,139,0.25); }
-  .nav-label { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 0 20px; margin: 12px 0 6px; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; cursor: pointer; color: var(--muted); font-size: 13px; transition: all 0.15s; border-left: 2px solid transparent; }
-  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-  .nav-item.active { color: var(--accent); background: var(--accent-light); border-left-color: var(--accent); font-weight: 500; }
-  .nav-icon { width: 16px; height: 16px; opacity: 0.7; }
-  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-  .sidebar-footer { margin-top: auto; padding: 16px 20px 0; border-top: 1px solid var(--border); }
-  .progress-global { }
-  .pg-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
-  .pg-bar { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; }
-  .pg-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 2px; transition: width 0.4s ease; }
+/* SIDEBAR */
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
+.logo { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.logo-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.logo-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.logo-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--amber-bg); color: var(--amber); font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 8px; border: 1px solid var(--amber-border); }
+.nav-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 0 20px; margin: 14px 0 6px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; cursor: pointer; color: var(--muted); font-size: 13px; transition: all 0.15s; border-left: 2px solid transparent; }
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--accent); background: var(--accent-light); border-left-color: var(--accent); font-weight: 500; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.nav-count { margin-left: auto; font-size: 10px; padding: 1px 7px; border-radius: 20px; background: var(--surface2); color: var(--muted); }
+.sidebar-footer { margin-top: auto; padding: 16px 20px 0; border-top: 1px solid var(--border); }
+.sf-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.sf-bar { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+.sf-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--green)); transition: width 0.4s; }
 
-  /* HEADER */
-  .page-header { margin-bottom: 28px; }
-  .page-title { font-size: 22px; font-weight: 600; color: var(--text); }
-  .page-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+/* MAIN */
+.main { padding: 32px 36px; overflow-y: auto; max-width: 1100px; }
+.page-header { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.ph-left {}
+.page-title { font-size: 22px; font-weight: 600; }
+.page-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.btn { padding: 7px 16px; font-size: 12px; font-weight: 500; border-radius: var(--radius); border: 1px solid var(--border2); background: var(--surface); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn:hover { background: var(--surface2); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-danger { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+.btn-danger:hover { opacity: 0.8; }
 
-  /* STATS ROW */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-  .stat-val { font-size: 24px; font-weight: 600; color: var(--text); }
-  .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .stat-card.accent { border-color: var(--accent-glow); background: var(--accent-light); }
-  .stat-card.accent .stat-val { color: var(--accent); }
+/* META FORM */
+.meta-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 24px; }
+.meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.meta-field { display: flex; flex-direction: column; gap: 6px; }
+.meta-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.7px; text-transform: uppercase; }
+.meta-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; font-family: inherit; }
+.meta-input:focus { border-color: var(--accent); }
+.meta-input::placeholder { color: var(--muted); }
 
-  /* FILTER BAR */
-  .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-  .filter-btn { padding: 5px 14px; font-size: 12px; border: 1px solid var(--border2); border-radius: 20px; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.15s; }
-  .filter-btn:hover { color: var(--text); border-color: var(--border2); }
-  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
-  .search { margin-left: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 12px; color: var(--text); font-size: 13px; width: 180px; outline: none; }
-  .search:focus { border-color: var(--accent); }
-  .search::placeholder { color: var(--muted); }
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 24px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.stat-val { font-size: 22px; font-weight: 600; }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.stat.s-green { border-color: var(--green-border); }
+.stat.s-green .stat-val { color: var(--green); }
+.stat.s-red { border-color: var(--red-border); }
+.stat.s-red .stat-val { color: var(--red); }
+.stat.s-amber { border-color: var(--amber-border); }
+.stat.s-amber .stat-val { color: var(--amber); }
+.stat.s-accent { border-color: var(--accent-glow); background: var(--accent-light); }
+.stat.s-accent .stat-val { color: var(--accent); }
 
-  /* MODULE CARDS */
-  .modules-grid { display: flex; flex-direction: column; gap: 10px; }
-  .mod-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; transition: border-color 0.15s; cursor: pointer; }
-  .mod-card:hover { border-color: var(--border2); }
-  .mod-card.expanded { border-color: var(--accent-glow); }
-  .mod-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-  .mod-left { display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 0; }
-  .mod-num { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
-  .mod-info { flex: 1; min-width: 0; }
-  .mod-title { font-size: 14px; font-weight: 600; color: var(--text); }
-  .mod-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .mod-meta { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
-  .mod-meta span { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
-  .mod-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
-  .status-btn { padding: 4px 12px; font-size: 11px; font-weight: 500; border-radius: 20px; border: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-  .s-none { background: var(--surface2); color: var(--muted); }
-  .s-doing { background: var(--amber-bg); color: var(--amber); }
-  .s-done { background: var(--green-bg); color: var(--green); }
-  .cat-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
-  .mod-progress { margin-top: 12px; }
-  .mp-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-  .mp-bar { height: 3px; background: var(--border2); border-radius: 2px; overflow: hidden; }
-  .mp-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+/* SECTION */
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden; }
+.section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.12s; user-select: none; }
+.section-header:hover { background: rgba(255,255,255,0.02); }
+.sh-left { display: flex; align-items: center; gap: 12px; }
+.sh-num { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.sh-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.sh-right { display: flex; align-items: center; gap: 10px; }
+.sh-progress { font-size: 11px; color: var(--muted); }
+.sh-pill { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+.sh-chevron { color: var(--muted); font-size: 16px; transition: transform 0.2s; }
+.section.collapsed .sh-chevron { transform: rotate(-90deg); }
+.section.collapsed .section-body { display: none; }
 
-  /* EXPANDED DETAILS */
-  .mod-detail { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: none; }
-  .mod-card.expanded .mod-detail { display: block; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .detail-section { }
-  .detail-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
-  .resource-list { display: flex; flex-direction: column; gap: 6px; }
-  .resource-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; }
-  .resource-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .tasks-section { margin-top: 16px; }
-  .task-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-  .task-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; cursor: pointer; transition: background 0.1s; }
-  .task-item:hover { background: rgba(255,255,255,0.04); }
-  .task-item.done { color: var(--muted); text-decoration: line-through; }
-  .task-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .task-item.done .task-check { background: var(--green); border-color: var(--green); }
-  .check-svg { display: none; }
-  .task-item.done .check-svg { display: block; }
-  .add-task { display: flex; gap: 8px; margin-top: 8px; }
-  .add-task input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 12px; outline: none; }
-  .add-task input:focus { border-color: var(--accent); }
-  .add-task input::placeholder { color: var(--muted); }
-  .add-task button { padding: 8px 14px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 500; white-space: nowrap; }
-  .add-task button:hover { opacity: 0.85; }
-  .notes-area { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 12px; resize: vertical; min-height: 72px; outline: none; font-family: inherit; line-height: 1.6; margin-top: 8px; }
-  .notes-area:focus { border-color: var(--accent); }
-  .notes-area::placeholder { color: var(--muted); }
-  .sem-badge { font-size: 11px; color: var(--muted); }
+/* TABLE */
+.section-body { padding: 0; }
+.qc-table { width: 100%; border-collapse: collapse; }
+.qc-table thead tr { border-bottom: 1px solid var(--border2); }
+.qc-table th { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; padding: 10px 16px; text-align: left; }
+.qc-table th.col-check { text-align: center; width: 72px; }
+.qc-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.qc-table tbody tr:last-child { border-bottom: none; }
+.qc-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.qc-table td { padding: 10px 16px; font-size: 13px; color: var(--text); vertical-align: middle; }
+.qc-table td.col-item { color: var(--text); }
+.qc-table td.col-check { text-align: center; }
 
-  /* TIMELINE VIEW */
-  #view-timeline { display: none; }
-  .timeline { position: relative; padding-left: 32px; }
-  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 1px; background: var(--border2); }
-  .tl-month { position: relative; margin-bottom: 24px; }
-  .tl-dot { position: absolute; left: -28px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--surface); }
-  .tl-month-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
-  .tl-items { display: flex; flex-direction: column; gap: 6px; }
-  .tl-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; }
-  .tl-item-title { font-weight: 500; color: var(--text); }
-  .tl-item-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+/* CHECKBOX TRIPLE */
+.check-group { display: flex; justify-content: center; }
+.tri-check { display: flex; gap: 0; }
+.tri-btn { width: 34px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); transition: all 0.13s; font-size: 11px; font-weight: 600; color: var(--muted); }
+.tri-btn:first-child { border-radius: 7px 0 0 7px; border-right: none; }
+.tri-btn:last-child { border-radius: 0 7px 7px 0; }
+.tri-btn.yes.active { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+.tri-btn.no.active { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+.tri-btn.rev.active { background: var(--purple-bg); border-color: rgba(167,139,250,0.3); color: var(--purple); }
+.tri-btn:hover:not(.active) { background: var(--surface3); color: var(--text); }
 
-  /* CERTS VIEW */
-  #view-certs { display: none; }
-  .certs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .cert-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
-  .cert-icon { font-size: 32px; margin-bottom: 12px; }
-  .cert-name { font-size: 15px; font-weight: 600; color: var(--text); }
-  .cert-org { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .cert-reqs { margin-top: 12px; }
-  .cert-req { font-size: 12px; color: var(--muted); padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-  .cert-req:last-child { border-bottom: none; }
-  .cert-status { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; }
+/* ROLES header */
+.role-header { display: flex; gap: 0; }
+.role-th { width: 34px; font-size: 9px; font-weight: 700; text-align: center; color: var(--muted); letter-spacing: 0.5px; }
 
-  /* EMPTY */
-  .empty { text-align: center; padding: 48px 24px; color: var(--muted); }
-  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+/* N/A row */
+.na-indicator { font-size: 10px; color: var(--muted); opacity: 0.5; font-style: italic; }
 
-  @media (max-width: 768px) {
-    .app { grid-template-columns: 1fr; }
-    .sidebar { position: fixed; left: -240px; z-index: 100; height: 100vh; transition: left 0.2s; }
-    .sidebar.open { left: 0; }
-    .main { padding: 20px 16px; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .detail-grid { grid-template-columns: 1fr; }
-    .certs-grid { grid-template-columns: 1fr; }
-  }
+/* HISTORY VIEW */
+#view-history { display: none; }
+.hist-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; cursor: pointer; transition: border-color 0.15s; }
+.hist-card:hover { border-color: var(--border2); }
+.hist-left {}
+.hist-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.hist-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.hist-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.hist-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.hist-del { font-size: 11px; color: var(--red); background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+.hist-del:hover { opacity: 0.8; }
+.empty-state { text-align: center; padding: 56px 24px; color: var(--muted); }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+/* PRINT / EXPORT */
+.export-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 28px 32px; max-width: 560px; width: 90%; }
+.modal-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.modal-body { max-height: 360px; overflow-y: auto; font-size: 13px; line-height: 1.9; color: var(--text); }
+.modal-footer { margin-top: 20px; display: flex; gap: 8px; justify-content: flex-end; }
+.modal-section-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin: 14px 0 6px; }
+.modal-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.modal-row:last-child { border-bottom: none; }
+.modal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.modal-item { flex: 1; font-size: 12px; }
+.modal-chips { display: flex; gap: 4px; flex-shrink: 0; }
+.chip { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+.chip-y { background: var(--green-bg); color: var(--green); }
+.chip-n { background: var(--red-bg); color: var(--red); }
+.chip-r { background: var(--purple-bg); color: var(--purple); }
+.chip-e { background: var(--surface2); color: var(--muted); }
+
+/* SHARE BAR */
+.share-bar { margin-top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; transition: border-color 0.3s; }
+.share-bar.ready { border-color: var(--green-border); background: var(--green-bg); }
+.share-bar-left { display: flex; align-items: center; gap: 14px; }
+.share-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: var(--surface2); transition: background 0.3s; }
+.share-bar.ready .share-icon { background: rgba(34,201,139,0.2); }
+.share-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.share-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.share-bar.ready .share-sub { color: var(--green); }
+.btn-share { padding: 10px 22px; font-size: 13px; font-weight: 600; border-radius: var(--radius); border: none; cursor: not-allowed; transition: all 0.25s; background: var(--surface2); color: var(--muted); opacity: 0.5; white-space: nowrap; }
+.btn-share.enabled { background: var(--green); color: #fff; opacity: 1; cursor: pointer; box-shadow: 0 0 0 0 rgba(34,201,139,0.4); animation: pulse-green 2s infinite; }
+.btn-share.enabled:hover { opacity: 0.88; animation: none; }
+@keyframes pulse-green { 0%,100% { box-shadow: 0 0 0 0 rgba(34,201,139,0.35); } 50% { box-shadow: 0 0 0 6px rgba(34,201,139,0); } }
+.share-checklist { display: flex; gap: 6px; flex-wrap: wrap; }
+.share-check-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+.share-check-item.ok { color: var(--green); }
+.share-check-item .sc-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* SHARE MODAL */
+.share-modal { max-width: 620px; }
+.share-modal .modal-body { font-size: 13px; }
+.email-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.email-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.7px; text-transform: uppercase; }
+.email-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 9px 13px; color: var(--text); font-size: 13px; outline: none; font-family: inherit; width: 100%; }
+.email-input:focus { border-color: var(--accent); }
+.email-input::placeholder { color: var(--muted); }
+.share-preview { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-size: 12px; line-height: 1.8; color: var(--text); max-height: 240px; overflow-y: auto; margin-top: 12px; white-space: pre-wrap; font-family: 'Courier New', monospace; }
+.share-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.share-tab { padding: 5px 14px; font-size: 12px; border: 1px solid var(--border2); border-radius: 20px; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.13s; }
+.share-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.copy-toast { display: none; font-size: 11px; color: var(--green); margin-left: 8px; }
+.copy-toast.show { display: inline; }
+
+@media print {
+  .sidebar, .header-actions, .export-bar, .btn, .modal-overlay, .share-bar { display: none !important; }
+  .app { grid-template-columns: 1fr; }
+  .main { padding: 16px; }
+  .section.collapsed .section-body { display: block !important; }
+}
 </style>
 </head>
 <body>
-
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="logo">
-      <div class="logo-title">MBA · Gestão de Projetos</div>
-      <div class="logo-sub">Painel de estudos pessoal</div>
-      <span class="logo-badge">100% gratuito</span>
-    </div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-eyebrow">Qualidade</div>
+    <div class="logo-title">QC Tracker</div>
+    <div class="logo-sub">Controle de qualidade de tarefas</div>
+    <span class="logo-badge">✦ Editorial &amp; Técnico</span>
+  </div>
 
-    <div class="nav-label">Navegação</div>
-    <div class="nav-item active" onclick="showView('modules', this)">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
-      Módulos
-    </div>
-    <div class="nav-item" onclick="showView('timeline', this)">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-      Cronograma
-    </div>
-    <div class="nav-item" onclick="showView('certs', this)">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5l3.5-.5L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-      Certificações
-    </div>
+  <div class="nav-label">Visualizações</div>
+  <div class="nav-item active" onclick="showView('checklist', this)">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="2.5" width="10" height="1.2" rx="0.6" fill="currentColor"/><rect x="1.5" y="5.9" width="10" height="1.2" rx="0.6" fill="currentColor"/><rect x="1.5" y="9.3" width="7" height="1.2" rx="0.6" fill="currentColor"/><rect x="11" y="8.5" width="2.5" height="4" rx="0.5" fill="currentColor" opacity=".4"/><rect x="9.5" y="10" width="2.5" height="2.5" rx="0.5" fill="currentColor"/></svg>
+    Checklist ativo
+  </div>
+  <div class="nav-item" onclick="showView('history', this)">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 4.5v3l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Histórico
+    <span class="nav-count" id="hist-count">0</span>
+  </div>
 
-    <div class="nav-label" style="margin-top:16px;">Semestres</div>
-    <div class="nav-item" onclick="filterSem('all')"><div class="nav-dot" style="background:var(--accent)"></div>Todos</div>
-    <div class="nav-item" onclick="filterSem('1')"><div class="nav-dot" style="background:var(--teal)"></div>Semestre 1</div>
-    <div class="nav-item" onclick="filterSem('2')"><div class="nav-dot" style="background:var(--purple)"></div>Semestre 2</div>
-    <div class="nav-item" onclick="filterSem('3')"><div class="nav-dot" style="background:var(--amber)"></div>Semestre 3</div>
+  <div class="nav-label" style="margin-top:8px;">Seções</div>
+  <div id="section-nav"></div>
 
-    <div class="sidebar-footer">
-      <div class="progress-global">
-        <div class="pg-label"><span>Progresso geral</span><span id="pct-global">0%</span></div>
-        <div class="pg-bar"><div class="pg-fill" id="bar-global" style="width:0%"></div></div>
+  <div class="sidebar-footer">
+    <div class="sf-label"><span>Progresso</span><span id="pct-sidebar">0%</span></div>
+    <div class="sf-bar"><div class="sf-fill" id="bar-sidebar" style="width:0%"></div></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- CHECKLIST VIEW -->
+  <div id="view-checklist">
+    <div class="page-header">
+      <div class="ph-left">
+        <div class="page-title">Controle de Qualidade</div>
+        <div class="page-sub">Preencha os profissionais e marque cada item antes de finalizar</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn" onclick="window.print()">↓ Imprimir</button>
+        <button class="btn btn-danger" onclick="confirmReset()">Reiniciar</button>
+        <button class="btn btn-primary" onclick="finalizarChecklist()">Finalizar e salvar ↗</button>
       </div>
     </div>
-  </aside>
 
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- MODULES VIEW -->
-    <div id="view-modules">
-      <div class="page-header">
-        <div class="page-title">Grade curricular</div>
-        <div class="page-sub">Clique em um módulo para expandir e gerenciar atividades</div>
+    <!-- META -->
+    <div class="meta-card">
+      <div class="meta-grid">
+        <div class="meta-field">
+          <label class="meta-label">Documento / Projeto</label>
+          <input class="meta-input" id="meta-doc" placeholder="Ex: Manual do proprietário — Fiat Pulse 2025" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Mercado / País-alvo</label>
+          <input class="meta-input" id="meta-market" placeholder="Ex: Brasil — PT-BR" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Data</label>
+          <input class="meta-input" id="meta-date" type="date" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Redator</label>
+          <input class="meta-input" id="meta-redator" placeholder="Nome completo" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Diagramador</label>
+          <input class="meta-input" id="meta-diagramador" placeholder="Nome completo" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Revisor</label>
+          <input class="meta-input" id="meta-revisor" placeholder="Nome completo" />
+        </div>
       </div>
-
-      <div class="stats" id="stats-row"></div>
-
-      <div class="filter-bar">
-        <button class="filter-btn active" onclick="applyFilter('all', this)">Todos</button>
-        <button class="filter-btn" onclick="applyFilter('none', this)">Não iniciados</button>
-        <button class="filter-btn" onclick="applyFilter('doing', this)">Em andamento</button>
-        <button class="filter-btn" onclick="applyFilter('done', this)">Concluídos</button>
-        <input class="search" type="text" placeholder="Buscar módulo..." id="search-input" oninput="renderModules()">
-      </div>
-
-      <div class="modules-grid" id="modules-list"></div>
     </div>
 
-    <!-- TIMELINE VIEW -->
-    <div id="view-timeline">
-      <div class="page-header">
-        <div class="page-title">Cronograma</div>
-        <div class="page-sub">18 meses de estudo · 10–20h por semana</div>
-      </div>
-      <div class="timeline" id="timeline-content"></div>
-    </div>
+    <!-- STATS -->
+    <div class="stats" id="stats-row"></div>
 
-    <!-- CERTS VIEW -->
-    <div id="view-certs">
-      <div class="page-header">
-        <div class="page-title">Certificações</div>
-        <div class="page-sub">Objetivo final da grade curricular</div>
-      </div>
-      <div class="certs-grid" id="certs-content"></div>
-    </div>
+    <!-- SECTIONS -->
+    <div id="sections-container"></div>
 
-  </main>
+    <!-- SHARE BAR -->
+    <div class="share-bar" id="share-bar">
+      <div class="share-bar-left">
+        <div class="share-icon" id="share-icon">📋</div>
+        <div>
+          <div class="share-title">Compartilhar com gestor</div>
+          <div class="share-sub" id="share-sub">Preencha todos os itens para habilitar o envio</div>
+          <div class="share-checklist" id="share-checklist" style="margin-top:6px;"></div>
+        </div>
+      </div>
+      <button class="btn-share" id="btn-share" disabled onclick="abrirModalShare()">Compartilhar ↗</button>
+    </div>
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div id="view-history">
+    <div class="page-header">
+      <div class="ph-left">
+        <div class="page-title">Histórico de checklists</div>
+        <div class="page-sub">Registros salvos neste navegador</div>
+      </div>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
+</main>
+</div>
+
+<!-- MODAL COMPARTILHAR -->
+<div class="modal-overlay" id="modal-share">
+  <div class="modal share-modal">
+    <div class="modal-title">Compartilhar com gestor</div>
+    <div class="modal-sub" id="share-modal-sub">Escolha como deseja enviar o relatório</div>
+    <div class="share-tabs">
+      <button class="share-tab active" onclick="switchShareTab('email', this)">E-mail</button>
+      <button class="share-tab" onclick="switchShareTab('texto', this)">Texto / WhatsApp</button>
+      <button class="share-tab" onclick="switchShareTab('link', this)">Link direto</button>
+    </div>
+    <div id="share-tab-email">
+      <div class="email-field">
+        <label class="email-label">E-mail do gestor</label>
+        <input class="email-input" id="gestor-email" type="email" placeholder="gestor@empresa.com" />
+      </div>
+      <div class="email-field">
+        <label class="email-label">Mensagem adicional (opcional)</label>
+        <input class="email-input" id="gestor-msg" placeholder="Ex: Segue checklist do manual Pulse 2025 para aprovação." />
+      </div>
+      <div class="share-preview" id="share-preview-email"></div>
+    </div>
+    <div id="share-tab-texto" style="display:none;">
+      <div class="share-preview" id="share-preview-texto"></div>
+    </div>
+    <div id="share-tab-link" style="display:none;">
+      <div style="font-size:13px; color:var(--muted); margin-bottom:10px;">Copie o link abaixo e envie pelo canal de sua preferência. O relatório completo está codificado na URL.</div>
+      <div class="share-preview" id="share-preview-link" style="word-break:break-all; font-size:11px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeShareModal()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-share-action" onclick="executarShare()">Abrir no cliente de e-mail ↗</button>
+      <span class="copy-toast" id="copy-toast">✓ Copiado!</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Resumo do checklist</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
 </div>
 
 <script>
-const MODULES = [
-  { id:1, sem:1, num:'01', title:'Fundamentos de Gestão de Projetos', syllabus:['Introdução à Gestão de Projetos','Ciclo de Vida Preditivo, Ágil e Híbrido','Termo de Abertura (TAP)','Estrutura Analítica do Projeto (EAP)','Gestão de Escopo, Prazo e Custos','Stakeholders e Governança','PMBOK 7 e Princípios de Entrega de Valor'], desc:'Ciclo de vida, partes interessadas, escopo, tempo e custo', hours:'80h', dur:'2 meses', cat:'Base', color:'#5b6af0', colorBg:'rgba(91,106,240,0.15)', resources:['Google Project Management — Coursera (audit gratuito)','PMBOK Guide 7ª ed — PDF oficial PMI','YouTube: Google PM Crash Course'], tasks:['Criar conta no Coursera e inscrever-se no curso','Ler capítulos 1–3 do PMBOK 7','Fazer mapa mental de ciclos de vida','Concluir semanas 1 e 2 do curso Google','Exercício prático: montar TAP de um projeto fictício'] },
-  { id:2, sem:1, num:'02', title:'Metodologias Ágeis (Scrum & Kanban)', syllabus:['Manifesto Ágil','Papéis do Scrum','Eventos e Artefatos Scrum','Product Backlog e Sprint Backlog','Kanban e Limites de WIP','Métricas Ágeis','Escalabilidade Ágil'], desc:'Sprints, backlog, ceremonies, WIP limits e fluxo de trabalho', hours:'60h', dur:'1,5 mês', cat:'Ágil', color:'#2dd4bf', colorBg:'rgba(45,212,191,0.15)', resources:['Scrum.org — cursos e materiais gratuitos','Kanban University — free content','Atlassian Agile Coach — guia completo'], tasks:['Ler Scrum Guide 2020 (PDF gratuito)','Fazer curso Professional Scrum Foundations','Criar um board Kanban no Trello para estudos','Assistir série de vídeos do Atlassian Agile','Simulado: 30 questões de Scrum'] },
-  { id:3, sem:2, num:'03', title:'Gestão de Riscos e Qualidade', syllabus:['Planejamento de Riscos','Identificação de Riscos','Análise Qualitativa','Análise Quantitativa','Planos de Resposta','Monitoramento e Controle','Gestão da Qualidade e Melhoria Contínua'], desc:'Identificação, análise qualitativa/quantitativa, plano de resposta', hours:'70h', dur:'1,5 mês', cat:'Risco', color:'#f5a623', colorBg:'rgba(245,166,35,0.15)', resources:['PMI.org — free webinars e artigos','ASQ Learning Institute — free tier','YouTube: Risk Management for PMs'], tasks:['Mapear os 6 processos de gestão de riscos','Criar matriz de risco (probabilidade x impacto)','Assistir 3 webinars gratuitos do PMI','Exercício: análise de riscos de um projeto real','Estudar ferramentas: RBS, Monte Carlo (conceito)'] },
-  { id:4, sem:2, num:'04', title:'Liderança, Equipes e Comunicação', syllabus:['Liderança Situacional','Inteligência Emocional','Gestão de Conflitos','Comunicação Corporativa','Engajamento de Stakeholders','Negociação','Desenvolvimento de Equipes'], desc:'Inteligência emocional, gestão de conflitos e stakeholders', hours:'60h', dur:'1,5 mês', cat:'Liderança', color:'#a78bfa', colorBg:'rgba(167,139,250,0.15)', resources:['Coursera: Inspirational Leadership (audit)','MIT OpenCourseWare — Leadership','HBR.org — artigos gratuitos sobre liderança'], tasks:['Fazer teste de perfil DISC (gratuito online)','Ler 5 artigos do HBR sobre liderança em projetos','Assistir aula MIT OpenCourseWare Leadership','Criar plano de comunicação de stakeholders','Exercício: simular reunião de kick-off'] },
-  { id:5, sem:2, num:'05', title:'Gestão Financeira de Projetos', syllabus:['Orçamento de Projetos','Fluxo de Caixa','ROI e VPL','Earned Value Management (EVM)','Indicadores CPI e SPI','Controle Financeiro','Análise de Viabilidade'], desc:'Orçamento, EVM (valor agregado), ROI e análise de viabilidade', hours:'50h', dur:'1 mês', cat:'Finanças', color:'#5b6af0', colorBg:'rgba(91,106,240,0.15)', resources:['Khan Academy — Finance & Capital Markets','edX: Finance for Everyone (free audit)','PMI — EVM Practice Standard (PDF)'], tasks:['Estudar módulo de orçamentos no Khan Academy','Entender as métricas EVM: CPI, SPI, EAC','Baixar e ler EVM Practice Standard PMI','Exercício: calcular EVM de projeto fictício','Fazer curso completo no edX (audit)'] },
-  { id:6, sem:3, num:'06', title:'Ferramentas e Tecnologia em GP', syllabus:['MS Project','Jira Software','Notion para PMO','Asana e Monday.com','Dashboards e KPIs','Automação de Processos','Integração de Ferramentas'], desc:'MS Project, Jira, Notion, Asana, Monday — domínio prático', hours:'50h', dur:'1 mês', cat:'Tech', color:'#22c98b', colorBg:'rgba(34,201,139,0.15)', resources:['Notion Academy — certificação gratuita','Asana Academy — cursos gratuitos','YouTube: MS Project Tutorial Completo'], tasks:['Criar workspace no Notion e organizar estudos','Fazer certificação gratuita Asana Basics','Assistir tutorial MS Project (4h no YouTube)','Criar projeto de teste no Jira (free)','Comparar ferramentas: fazer planilha pros/contras'] },
-  { id:7, sem:3, num:'07', title:'PMO e Gestão de Portfólio', syllabus:['Tipos de PMO','Maturidade Organizacional','Gestão de Portfólio','Priorização de Projetos','Governança Corporativa','Balanced Scorecard','Alinhamento Estratégico'], desc:'Estrutura de PMO, priorização de projetos e alinhamento estratégico', hours:'60h', dur:'1,5 mês', cat:'Estratégia', color:'#f06060', colorBg:'rgba(240,96,96,0.15)', resources:['PMI.org — free articles sobre PMO','Gartner — conteúdo público gratuito','HBR: articles on Portfolio Management'], tasks:['Ler 3 artigos PMI sobre tipos de PMO','Estudar modelos de maturidade (OPM3)','Exercício: desenhar estrutura de PMO fictício','Aprender critérios de priorização de portfólio','Elaborar proposta de criação de PMO'] },
-  { id:8, sem:3, num:'08', title:'Preparação para Certificação PMP/CAPM', syllabus:['Domínios PMP','Princípios PMBOK 7','Abordagens Preditiva e Ágil','Estratégias de Prova','Resolução de Simulados','Gestão do Tempo na Prova','Plano Final de Certificação'], desc:'Simulados, revisão de todos os domínios e estratégia de prova', hours:'80h', dur:'2 meses', cat:'Certificação', color:'#f5a623', colorBg:'rgba(245,166,35,0.15)', resources:['PMI.org — PMBOK 7 PDF oficial gratuito','PrepCast — free trial simulado','Joseph Phillips Udemy (gratuito em promoções)'], tasks:['Revisar os 12 princípios do PMBOK 7','Fazer 50 questões simulado CAPM/PMP','Estudar domínios Preditivo vs. Ágil vs. Híbrido','Resolver 200 questões acumuladas','Solicitar aplicação no PMI (CAPM: sem exp. req.)','Agendar data da prova'] }
+const SECTIONS = [
+  {
+    id: 's1', num: 1, title: 'Padronização e Formatação',
+    color: '#5b6af0', colorBg: 'rgba(91,106,240,0.15)',
+    items: [
+      { label: 'Documento segue o template oficial do brand', roles: ['sim','nao','revisor'] },
+      { label: 'Fonte, tamanhos e espaçamentos padronizados', roles: ['sim','nao','revisor'] },
+      { label: 'Numeração de páginas correta', roles: ['sim','nao','revisor'] },
+      { label: 'Nomes de capítulos e seções estão corretos — não faltam páginas ou conteúdo', roles: ['sim','nao','revisor'] },
+      { label: 'Tabelas com título e alinhadas', roles: ['sim','nao','revisor'] },
+      { label: 'Imagens com resolução mínima (300 dpi)', roles: ['sim','nao'] },
+      { label: 'Capítulos seguem a ordem', roles: ['sim','nao','revisor'] },
+    ]
+  },
+  {
+    id: 's2', num: 2, title: 'Terminologia',
+    color: '#2dd4bf', colorBg: 'rgba(45,212,191,0.15)',
+    items: [
+      { label: 'Assuntos legislativos específicos de mercado (termos localizados)', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's3', num: 3, title: 'Texto e Redação',
+    color: '#a78bfa', colorBg: 'rgba(167,139,250,0.15)',
+    items: [
+      { label: 'Ortografia e pontuação revisada', roles: ['sim','nao','revisor'] },
+      { label: 'Traduções completas e corretas (presença de texto em outro idioma)', roles: ['sim','nao','revisor'] },
+      { label: 'Índice testado aleatoriamente', roles: ['sim','nao','revisor'] },
+    ]
+  },
+  {
+    id: 's4', num: 4, title: 'Conteúdo Técnico',
+    color: '#f5a623', colorBg: 'rgba(245,166,35,0.15)',
+    items: [
+      { label: 'Especificações corretas conforme ficha técnica', roles: ['sim','nao'] },
+      { label: 'Versões corretas conforme Griglia / Decli / Descritivo de Produto', roles: ['sim','nao'] },
+      { label: 'Plano de Manutenção checado e ilustrações corretamente referenciadas com a legenda', roles: ['sim','nao','revisor'] },
+      { label: 'Fotos coerentes com o modelo descrito', roles: ['sim','nao','revisor'] },
+      { label: 'Lubrificantes seguem marca oficial da fabricante', roles: ['sim','nao'] },
+      { label: 'Desenho da caixa de fusíveis fornecido', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's5', num: 5, title: 'Segurança',
+    color: '#f06060', colorBg: 'rgba(240,96,96,0.15)',
+    items: [
+      { label: 'Advertências padronizadas', roles: ['sim','nao'] },
+      { label: 'Normas de transporte de crianças conforme mercado', roles: ['sim','nao','revisor'] },
+      { label: 'Riscos mecânicos, elétricos e químicos contemplados', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's6', num: 6, title: 'Revisão Final',
+    color: '#22c98b', colorBg: 'rgba(34,201,139,0.15)',
+    items: [
+      { label: 'Revisão do layout do PDF final', roles: ['sim','nao','revisor'] },
+      { label: 'Arquivo salvo no repositório oficial', roles: ['sim','nao'] },
+      { label: 'Aplicado controle para busca de brand trocado (FIAT/JEEP/RAM)', roles: ['sim','nao','revisor'] },
+    ]
+  },
+  {
+    id: 's7', num: 7, title: 'Testes Práticos',
+    color: '#f5a623', colorBg: 'rgba(245,166,35,0.15)',
+    items: [
+      { label: 'Procedimentos testados no produto real', roles: ['sim','nao'] },
+      { label: 'Presença do veículo na empresa', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's8', num: 8, title: 'Conformidade Local',
+    color: '#5b6af0', colorBg: 'rgba(91,106,240,0.15)',
+    items: [
+      { label: 'Idioma ajustado ao país-alvo', roles: ['sim','nao'] },
+      { label: 'Termos técnicos verificados', roles: ['sim','nao'] },
+      { label: 'Normas legais aplicáveis atendidas', roles: ['sim','nao'] },
+    ]
+  }
 ];
 
-const CERTS = [
-  { icon:'🎯', name:'CAPM', org:'Project Management Institute (PMI)', desc:'Certified Associate in Project Management', reqs:[{label:'Ensino médio completo',ok:true},{label:'23h de treinamento em GP',ok:false},{label:'Exame: 150 questões · 3h',ok:false},{label:'Custo: US$225 (estudante)',ok:false}], note:'Sem exigência de experiência profissional — ideal para iniciar' },
-  { icon:'🏆', name:'PMP', org:'Project Management Institute (PMI)', desc:'Project Management Professional', reqs:[{label:'Ensino superior completo',ok:true},{label:'36 meses liderando projetos',ok:false},{label:'35h de treinamento em GP',ok:false},{label:'Exame: 180 questões · 4h',ok:false}], note:'A certificação mais reconhecida do mundo em GP' },
-  { icon:'⚡', name:'PSM I', org:'Scrum.org', desc:'Professional Scrum Master I', reqs:[{label:'Nenhum pré-requisito',ok:true},{label:'Exame: 80 questões · 60min',ok:false},{label:'Custo: US$150',ok:false},{label:'Validade: vitalícia',ok:false}], note:'100% online, pode fazer quando quiser após módulo 2' },
-  { icon:'📋', name:'PMI-ACP', org:'Project Management Institute (PMI)', desc:'Agile Certified Practitioner', reqs:[{label:'Ensino superior ou médio',ok:true},{label:'21h de treinamento ágil',ok:false},{label:'2.000h em projetos ágeis',ok:false},{label:'Exame: 120 questões · 3h',ok:false}], note:'Complementar ao PMP para ambientes ágeis/híbridos' }
-];
+const ROLE_LABELS = { sim: 'S', nao: 'N', revisor: 'R' };
+const ROLE_TITLES = { sim: 'SIM', nao: 'NÃO', revisor: 'REVISOR' };
 
-let state = JSON.parse(localStorage.getItem('mba-gp-state') || '{}');
-let currentFilter = 'all';
-let currentSem = 'all';
+let checks = JSON.parse(localStorage.getItem('qc-checks') || '{}');
+let history = JSON.parse(localStorage.getItem('qc-history') || '[]');
+let collapsed = {};
 
-function getState(id) {
-  return state[id] || { status:'none', tasks:[], notes:'' };
-}
-function setState(id, data) {
-  state[id] = data;
-  localStorage.setItem('mba-gp-state', JSON.stringify(state));
+function key(sid, idx, role) { return `${sid}-${idx}-${role}`; }
+
+function getCheck(sid, idx, role) { return checks[key(sid,idx,role)] || false; }
+function setCheck(sid, idx, role, val) {
+  checks[key(sid,idx,role)] = val;
+  localStorage.setItem('qc-checks', JSON.stringify(checks));
 }
 
-function cycleStatus(id, e) {
-  e.stopPropagation();
-  const s = getState(id);
-  const cycle = { none:'doing', doing:'done', done:'none' };
-  s.status = cycle[s.status];
-  setState(id, s);
+function toggle(sid, idx, role) {
+  const k = key(sid,idx,role);
+  const isActive = checks[k];
+  // clear sibling roles on yes/no toggle for mutual exclusion between yes and no
+  if (role === 'sim' || role === 'nao') {
+    const other = role === 'sim' ? 'nao' : 'sim';
+    checks[key(sid,idx,other)] = false;
+  }
+  checks[k] = !isActive;
+  localStorage.setItem('qc-checks', JSON.stringify(checks));
   renderAll();
 }
 
-function toggleTask(modId, taskIdx, e) {
-  e.stopPropagation();
-  const s = getState(modId);
-  if (!s.tasks) s.tasks = [];
-  const key = `default-${taskIdx}`;
-  const idx = s.tasks.indexOf(key);
-  if (idx >= 0) s.tasks.splice(idx, 1);
-  else s.tasks.push(key);
-  setState(modId, s);
-  renderAll();
+function totalItems() { return SECTIONS.reduce((a,s) => a + s.items.length, 0); }
+
+function countAnswered() {
+  let n = 0;
+  SECTIONS.forEach(s => s.items.forEach((it, idx) => {
+    if (it.roles.some(r => getCheck(s.id, idx, r))) n++;
+  }));
+  return n;
 }
 
-
-function toggleSyllabus(modId, syllabusIdx, e) {
-  e.stopPropagation();
-  const s = getState(modId);
-  if (!s.syllabus) s.syllabus = [];
-  const key = `syllabus-${syllabusIdx}`;
-  const idx = s.syllabus.indexOf(key);
-  if (idx >= 0) s.syllabus.splice(idx, 1);
-  else s.syllabus.push(key);
-  setState(modId, s);
-  renderAll();
+function countYes() {
+  let n = 0;
+  SECTIONS.forEach(s => s.items.forEach((it, idx) => {
+    if (getCheck(s.id, idx, 'sim')) n++;
+  }));
+  return n;
 }
 
-function toggleCustomTask(modId, taskKey, e) {
-  e.stopPropagation();
-  const s = getState(modId);
-  if (!s.tasks) s.tasks = [];
-  const idx = s.tasks.indexOf(taskKey);
-  if (idx >= 0) s.tasks.splice(idx, 1);
-  else s.tasks.push(taskKey);
-  setState(modId, s);
-  renderAll();
+function countNo() {
+  let n = 0;
+  SECTIONS.forEach(s => s.items.forEach((it, idx) => {
+    if (getCheck(s.id, idx, 'nao')) n++;
+  }));
+  return n;
 }
 
-function addTask(modId) {
-  const input = document.getElementById(`add-input-${modId}`);
-  const val = input.value.trim();
-  if (!val) return;
-  const s = getState(modId);
-  if (!s.customTasks) s.customTasks = [];
-  s.customTasks.push(val);
-  input.value = '';
-  setState(modId, s);
-  renderAll();
-}
-
-function saveNotes(modId) {
-  const el = document.getElementById(`notes-${modId}`);
-  const s = getState(modId);
-  s.notes = el.value;
-  setState(modId, s);
-}
-
-function toggleExpand(id) {
-  const el = document.getElementById(`mod-${id}`);
-  const isExp = el.classList.contains('expanded');
-  document.querySelectorAll('.mod-card').forEach(c => c.classList.remove('expanded'));
-  if (!isExp) el.classList.add('expanded');
-}
-
-function moduleProgress(m) {
-  const s = getState(m.id);
-  const defaultTotal = m.tasks.length;
-  const customTotal = (s.customTasks || []).length;
-  const total = defaultTotal + customTotal;
-  if (total === 0) return 0;
-  const doneDef = m.tasks.filter((_, i) => (s.tasks||[]).includes(`default-${i}`)).length;
-  const doneCust = (s.customTasks || []).filter((_, i) => (s.tasks||[]).includes(`custom-${i}`)).length;
-  return Math.round(((doneDef + doneCust) / total) * 100);
-}
-
-function statusLabel(st) {
-  if (st === 'doing') return 'Em andamento';
-  if (st === 'done') return 'Concluído';
-  return 'Não iniciado';
-}
-function statusClass(st) {
-  if (st === 'doing') return 's-doing';
-  if (st === 'done') return 's-done';
-  return 's-none';
-}
-
-let filterStatus = 'all';
-let filterSemester = 'all';
-let expandedId = null;
-
-function applyFilter(f, btn) {
-  filterStatus = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderModules();
-}
-
-function filterSem(sem) {
-  filterSemester = sem;
-  renderModules();
-}
-
-function showView(view, navEl) {
-  ['view-modules','view-timeline','view-certs'].forEach(v => document.getElementById(v).style.display = 'none');
-  document.getElementById('view-'+view).style.display = 'block';
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (navEl) navEl.classList.add('active');
-  if (view === 'timeline') renderTimeline();
-  if (view === 'certs') renderCerts();
+function sectionProgress(s) {
+  const total = s.items.length;
+  const done = s.items.filter((it,idx) => it.roles.some(r => getCheck(s.id,idx,r))).length;
+  return { done, total, pct: Math.round((done/total)*100) };
 }
 
 function renderStats() {
-  const total = MODULES.length;
-  const done = MODULES.filter(m => getState(m.id).status === 'done').length;
-  const doing = MODULES.filter(m => getState(m.id).status === 'doing').length;
-  const totalH = MODULES.filter(m => getState(m.id).status === 'done').reduce((a,m) => a + parseInt(m.hours), 0);
-  const pct = Math.round((done/total)*100);
-
+  const total = totalItems();
+  const answered = countAnswered();
+  const yes = countYes();
+  const no = countNo();
+  const pct = Math.round((answered/total)*100);
   document.getElementById('stats-row').innerHTML = `
-    <div class="stat-card accent"><div class="stat-val">${pct}%</div><div class="stat-lbl">Progresso geral</div></div>
-    <div class="stat-card"><div class="stat-val">${done}/${total}</div><div class="stat-lbl">Módulos concluídos</div></div>
-    <div class="stat-card"><div class="stat-val">${doing}</div><div class="stat-lbl">Em andamento</div></div>
-    <div class="stat-card"><div class="stat-val">${totalH}h</div><div class="stat-lbl">Horas concluídas</div></div>
+    <div class="stat s-accent"><div class="stat-val">${pct}%</div><div class="stat-lbl">Concluído</div></div>
+    <div class="stat"><div class="stat-val">${answered}/${total}</div><div class="stat-lbl">Itens respondidos</div></div>
+    <div class="stat s-green"><div class="stat-val">${yes}</div><div class="stat-lbl">Aprovados (SIM)</div></div>
+    <div class="stat s-red"><div class="stat-val">${no}</div><div class="stat-lbl">Pendências (NÃO)</div></div>
+    <div class="stat s-amber"><div class="stat-val">${SECTIONS.length}</div><div class="stat-lbl">Seções</div></div>
   `;
-  document.getElementById('pct-global').textContent = pct + '%';
-  document.getElementById('bar-global').style.width = pct + '%';
+  document.getElementById('pct-sidebar').textContent = pct + '%';
+  document.getElementById('bar-sidebar').style.width = pct + '%';
 }
 
-function renderModules() {
-  const search = document.getElementById('search-input').value.toLowerCase();
-  let list = MODULES.filter(m => {
-    const s = getState(m.id);
-    if (filterStatus !== 'all' && s.status !== filterStatus) return false;
-    if (filterSemester !== 'all' && m.sem != filterSemester) return false;
-    if (search && !m.title.toLowerCase().includes(search) && !m.desc.toLowerCase().includes(search)) return false;
-    return true;
-  });
+function renderSectionNav() {
+  const nav = document.getElementById('section-nav');
+  nav.innerHTML = SECTIONS.map(s => {
+    const prog = sectionProgress(s);
+    return `<div class="nav-item" onclick="scrollToSection('${s.id}')">
+      <div class="nav-dot" style="background:${s.color}"></div>
+      <span style="flex:1">${s.num}. ${s.title}</span>
+      <span class="nav-count" style="background:${prog.pct===100 ? 'var(--green-bg)' : 'var(--surface2)'}; color:${prog.pct===100 ? 'var(--green)' : 'var(--muted)'};">${prog.done}/${prog.total}</span>
+    </div>`;
+  }).join('');
+}
 
-  const container = document.getElementById('modules-list');
-  if (list.length === 0) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div>Nenhum módulo encontrado</div></div>';
-    return;
-  }
+function renderSections() {
+  const container = document.getElementById('sections-container');
+  container.innerHTML = SECTIONS.map(s => {
+    const prog = sectionProgress(s);
+    const pillColor = prog.pct === 100 ? 'var(--green)' : prog.pct > 0 ? 'var(--amber)' : 'var(--muted)';
+    const pillBg = prog.pct === 100 ? 'var(--green-bg)' : prog.pct > 0 ? 'var(--amber-bg)' : 'var(--surface2)';
+    const isCollapsed = collapsed[s.id];
 
-  container.innerHTML = list.map(m => {
-    const s = getState(m.id);
-    const prog = moduleProgress(m);
-    const semColor = m.sem === 1 ? 'var(--teal)' : m.sem === 2 ? 'var(--purple)' : 'var(--amber)';
-    const customTasks = s.customTasks || [];
-    const allTasks = [
-      ...m.tasks.map((t, i) => ({ key:`default-${i}`, label:t })),
-      ...customTasks.map((t, i) => ({ key:`custom-${i}`, label:t }))
-    ];
-
-    return `
-    <div class="mod-card" id="mod-${m.id}" onclick="toggleExpand(${m.id})">
-      <div class="mod-top">
-        <div class="mod-left">
-          <div class="mod-num" style="background:${m.colorBg}; color:${m.color}; font-size:12px;">${m.num}</div>
-          <div class="mod-info">
-            <div class="mod-title">${m.title}</div>
-            <div class="mod-desc">${m.desc}</div>
-            <div class="mod-meta">
-              <span>⏱ ${m.hours}</span>
-              <span>📅 ${m.dur}</span>
-              <span style="color:${semColor}">● Semestre ${m.sem}</span>
+    const rowsHtml = s.items.map((it, idx) => {
+      const hasAny = it.roles.some(r => getCheck(s.id, idx, r));
+      return `<tr>
+        <td class="col-item">${it.label}</td>
+        <td class="col-check">
+          <div class="check-group">
+            <div class="tri-check">
+              ${it.roles.includes('sim') ? `<div class="tri-btn yes ${getCheck(s.id,idx,'sim') ? 'active' : ''}" onclick="toggle('${s.id}',${idx},'sim')" title="SIM">S</div>` : `<div class="tri-btn" style="opacity:0.2; cursor:default;">S</div>`}
+              ${it.roles.includes('nao') ? `<div class="tri-btn no ${getCheck(s.id,idx,'nao') ? 'active' : ''}" onclick="toggle('${s.id}',${idx},'nao')" title="NÃO">N</div>` : `<div class="tri-btn" style="opacity:0.2; cursor:default;">N</div>`}
+              ${it.roles.includes('revisor') ? (() => { const revName = document.getElementById('meta-revisor').value.trim(); const isRev = getCheck(s.id,idx,'revisor'); const firstName = revName ? revName.split(' ')[0] : ''; return `<div class="tri-btn rev ${isRev ? 'active' : ''}" onclick="toggle('${s.id}',${idx},'revisor')" title="${revName ? 'Revisor: ' + revName : 'REVISOR'}" style="${isRev && firstName ? 'width:auto; padding:0 10px; font-size:10px; letter-spacing:0.3px;' : ''}">${isRev && firstName ? firstName : 'R'}</div>`; })() : `<div class="tri-btn" style="opacity:0.2; cursor:default;">R</div>`}
             </div>
           </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    return `<div class="section ${isCollapsed ? 'collapsed' : ''}" id="sec-${s.id}">
+      <div class="section-header" onclick="toggleSection('${s.id}')">
+        <div class="sh-left">
+          <div class="sh-num" style="background:${s.colorBg}; color:${s.color};">${s.num}</div>
+          <div class="sh-title">${s.title}</div>
         </div>
-        <div class="mod-right">
-          <button class="status-btn ${statusClass(s.status)}" onclick="cycleStatus(${m.id}, event)">${statusLabel(s.status)}</button>
-          <span class="cat-tag" style="background:${m.colorBg}; color:${m.color}; border: 1px solid ${m.color}30;">${m.cat}</span>
+        <div class="sh-right">
+          <span class="sh-progress">${prog.done}/${prog.total}</span>
+          <span class="sh-pill" style="background:${pillBg}; color:${pillColor};">${prog.pct}%</span>
+          <span class="sh-chevron">›</span>
         </div>
       </div>
-
-      <div class="mod-progress">
-        <div class="mp-top"><span>Tarefas concluídas</span><span>${prog}%</span></div>
-        <div class="mp-bar"><div class="mp-fill" style="width:${prog}%; background:${m.color};"></div></div>
-      </div>
-
-      <div class="mod-detail">
-        <div class="detail-grid">
-          <div class="detail-section">
-            <div class="detail-label">Recursos gratuitos</div>
-            <div class="detail-label" style="margin-top:10px;">Conteúdo Programático</div>
-            <div class="task-list">
-            ${m.syllabus.map((item,idx)=>`
-              <div class="task-item ${(s.syllabus||[]).includes(`syllabus-${idx}`) ? 'done' : ''}" onclick="toggleSyllabus(${m.id}, ${idx}, event)">
-                <div class="task-check">
-                  <svg class="check-svg" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                ${item}
-              </div>`).join('')}
-            </div>
-            <div class="resource-list">
-              ${m.resources.map(r => `<div class="resource-item"><div class="resource-dot" style="background:${m.color}"></div>${r}</div>`).join('')}
-            </div>
-          </div>
-          <div class="detail-section">
-            <div class="detail-label">Notas pessoais</div>
-            <textarea class="notes-area" id="notes-${m.id}" placeholder="Anotações, links, observações..." onclick="event.stopPropagation()" oninput="saveNotes(${m.id})">${s.notes||''}</textarea>
-          </div>
-        </div>
-
-        <div class="tasks-section">
-          <div class="detail-label">Checklist de atividades</div>
-          <div class="task-list">
-            ${allTasks.map(t => `
-              <div class="task-item ${(s.tasks||[]).includes(t.key) ? 'done' : ''}" onclick="${t.key.startsWith('default') ? `toggleTask(${m.id}, ${t.key.split('-')[1]}, event)` : `toggleCustomTask(${m.id}, '${t.key}', event)`}">
-                <div class="task-check">
-                  <svg class="check-svg" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                ${t.label}
-              </div>
-            `).join('')}
-          </div>
-          <div class="add-task" onclick="event.stopPropagation()">
-            <input id="add-input-${m.id}" type="text" placeholder="Adicionar tarefa personalizada..." onkeydown="if(event.key==='Enter') addTask(${m.id})">
-            <button onclick="addTask(${m.id})">+ Adicionar</button>
-          </div>
-        </div>
+      <div class="section-body">
+        <table class="qc-table">
+          <thead>
+            <tr>
+              <th>Item de verificação</th>
+              <th class="col-check" title="S = SIM | N = NÃO | R = REVISOR">S &nbsp; N &nbsp; R</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
       </div>
     </div>`;
   }).join('');
 }
 
-function renderTimeline() {
-  const months = [
-    { label:'Meses 1–2', items:[{title:'Módulo 01 – Fundamentos de GP', sub:'80h · Base teórica sólida', color:'#5b6af0'}] },
-    { label:'Meses 3–4', items:[{title:'Módulo 02 – Metodologias Ágeis', sub:'60h · Scrum & Kanban', color:'#2dd4bf'}] },
-    { label:'Meses 5–6', items:[{title:'Módulo 03 – Riscos e Qualidade', sub:'70h · Análise e planos de resposta', color:'#f5a623'}] },
-    { label:'Meses 7–8', items:[{title:'Módulo 04 – Liderança e Comunicação', sub:'60h · Soft skills e stakeholders', color:'#a78bfa'}] },
-    { label:'Mês 9', items:[{title:'Módulo 05 – Gestão Financeira', sub:'50h · EVM, ROI e orçamento', color:'#5b6af0'}] },
-    { label:'Mês 10', items:[{title:'Módulo 06 – Ferramentas e Tecnologia', sub:'50h · Jira, Notion, Asana', color:'#22c98b'}] },
-    { label:'Meses 11–12', items:[{title:'Módulo 07 – PMO e Portfólio', sub:'60h · Estratégia e alinhamento', color:'#f06060'}] },
-    { label:'Meses 13–15', items:[{title:'Módulo 08 – Prep. Certificação', sub:'80h · PMP / CAPM', color:'#f5a623'},{title:'Aplicar para CAPM', sub:'Sem exigência de experiência', color:'#22c98b'}] },
-    { label:'Meses 16–18', items:[{title:'Revisão geral e simulados', sub:'Foco na prova PMP', color:'#f5a623'},{title:'Prova PMP / CAPM 🎉', sub:'Meta final do MBA', color:'#22c98b'}] },
-  ];
-  document.getElementById('timeline-content').innerHTML = months.map(mo => `
-    <div class="tl-month">
-      <div class="tl-dot" style="background:${mo.items[0].color}"></div>
-      <div class="tl-month-label">${mo.label}</div>
-      <div class="tl-items">
-        ${mo.items.map(it => `<div class="tl-item"><div class="tl-item-title" style="color:${it.color}">${it.title}</div><div class="tl-item-sub">${it.sub}</div></div>`).join('')}
-      </div>
-    </div>
-  `).join('');
+function toggleSection(sid) {
+  collapsed[sid] = !collapsed[sid];
+  renderSections();
 }
 
-function renderCerts() {
-  document.getElementById('certs-content').innerHTML = CERTS.map(c => `
-    <div class="cert-card">
-      <div class="cert-icon">${c.icon}</div>
-      <div class="cert-name">${c.name}</div>
-      <div class="cert-org">${c.org}</div>
-      <div style="font-size:12px; color:var(--muted); margin-top:4px;">${c.note}</div>
-      <div class="cert-reqs">
-        ${c.reqs.map(r => `<div class="cert-req"><span class="cert-status" style="background:${r.ok ? 'var(--green-bg)' : 'var(--surface2)'}; color:${r.ok ? 'var(--green)' : 'var(--muted)'};">${r.ok ? '✓' : '○'}</span>${r.label}</div>`).join('')}
-      </div>
-    </div>
-  `).join('');
+function scrollToSection(sid) {
+  collapsed[sid] = false;
+  renderSections();
+  setTimeout(() => {
+    const el = document.getElementById('sec-' + sid);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 }
+
+function renderShareBar() {
+  const total = totalItems();
+  const answered = countAnswered();
+  const hasDoc = document.getElementById('meta-doc').value.trim().length > 0;
+  const hasGestor = true; // gestor email filled in modal
+  const allDone = answered === total;
+  const noItems = countNo();
+
+  const conditions = [
+    { label: `Todos os ${total} itens respondidos`, ok: allDone },
+    { label: 'Documento identificado', ok: hasDoc },
+  ];
+
+  document.getElementById('share-checklist').innerHTML = conditions.map(c =>
+    `<div class="share-check-item ${c.ok ? 'ok' : ''}"><div class="sc-dot"></div>${c.label}</div>`
+  ).join('');
+
+  const ready = allDone && hasDoc;
+  const bar = document.getElementById('share-bar');
+  const btn = document.getElementById('btn-share');
+  const sub = document.getElementById('share-sub');
+  const icon = document.getElementById('share-icon');
+
+  if (ready) {
+    bar.classList.add('ready');
+    btn.classList.add('enabled');
+    btn.disabled = false;
+    icon.textContent = '✅';
+    sub.textContent = noItems > 0
+      ? `${noItems} pendência(s) encontrada(s) — gestor será notificado`
+      : 'Checklist 100% aprovado — pronto para enviar';
+  } else {
+    bar.classList.remove('ready');
+    btn.classList.remove('enabled');
+    btn.disabled = true;
+    icon.textContent = '📋';
+    const remaining = total - answered;
+    sub.textContent = remaining > 0
+      ? `Faltam ${remaining} item(ns) para habilitar o envio`
+      : 'Identifique o documento para habilitar o envio';
+  }
+}
+
+function buildReportText(format) {
+  const doc = document.getElementById('meta-doc').value || 'Documento';
+  const market = document.getElementById('meta-market').value || '—';
+  const date = document.getElementById('meta-date').value || new Date().toISOString().split('T')[0];
+  const redator = document.getElementById('meta-redator').value || '—';
+  const diagramador = document.getElementById('meta-diagramador').value || '—';
+  const revisor = document.getElementById('meta-revisor').value || '—';
+  const yes = countYes(), no = countNo(), total = totalItems();
+  const pct = Math.round((yes/total)*100);
+
+  let lines = [];
+  if (format === 'email') {
+    lines.push(`RELATÓRIO DE CONTROLE DE QUALIDADE`);
+    lines.push(`═══════════════════════════════════`);
+    lines.push(`Documento: ${doc}`);
+    lines.push(`Mercado: ${market}   |   Data: ${date}`);
+    lines.push(`Redator: ${redator}   |   Diagramador: ${diagramador}   |   Revisor: ${revisor}`);
+    lines.push(`Resultado: ${pct}% aprovado — ✅ ${yes} OK  ❌ ${no} pendência(s)`);
+    lines.push(``);
+  } else {
+    lines.push(`*QC — ${doc}*`);
+    lines.push(`📅 ${date}  |  🌎 ${market}`);
+    lines.push(`👤 ${redator} / ${diagramador} / ${revisor}`);
+    lines.push(`📊 ${pct}% aprovado — ✅ ${yes}  ❌ ${no}`);
+    lines.push(``);
+  }
+
+  SECTIONS.forEach(s => {
+    lines.push(format === 'email' ? `▶ ${s.num}. ${s.title.toUpperCase()}` : `*${s.num}. ${s.title}*`);
+    s.items.forEach((it, idx) => {
+      const y = getCheck(s.id, idx, 'sim');
+      const n = getCheck(s.id, idx, 'nao');
+      const r = getCheck(s.id, idx, 'revisor');
+      const mark = y ? '✅' : n ? '❌' : '○';
+      const rev = r ? ' [REV]' : '';
+      lines.push(`  ${mark} ${it.label}${rev}`);
+    });
+    lines.push('');
+  });
+
+  if (no > 0) {
+    lines.push(format === 'email' ? `⚠ PENDÊNCIAS (${no} item(ns)):` : `*⚠ Pendências:*`);
+    SECTIONS.forEach(s => s.items.forEach((it,idx) => {
+      if (getCheck(s.id, idx, 'nao')) lines.push(`  ❌ ${it.label}`);
+    }));
+  }
+  return lines.join('\n');
+}
+
+let shareTab = 'email';
+function switchShareTab(tab, btn) {
+  shareTab = tab;
+  document.querySelectorAll('.share-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('share-tab-email').style.display = tab === 'email' ? '' : 'none';
+  document.getElementById('share-tab-texto').style.display = tab === 'texto' ? '' : 'none';
+  document.getElementById('share-tab-link').style.display = tab === 'link' ? '' : 'none';
+  const actionBtn = document.getElementById('btn-share-action');
+  if (tab === 'email') { actionBtn.textContent = 'Abrir no cliente de e-mail ↗'; }
+  else if (tab === 'texto') { actionBtn.textContent = 'Copiar texto'; }
+  else { actionBtn.textContent = 'Copiar link'; }
+}
+
+function abrirModalShare() {
+  const doc = document.getElementById('meta-doc').value || 'Documento';
+  const date = document.getElementById('meta-date').value || new Date().toISOString().split('T')[0];
+  document.getElementById('share-modal-sub').textContent = `${doc} · ${date}`;
+
+  const emailText = buildReportText('email');
+  const waText = buildReportText('wa');
+
+  document.getElementById('share-preview-email').textContent = emailText;
+  document.getElementById('share-preview-texto').textContent = waText;
+
+  // Build link (data URI with encoded state)
+  const payload = {
+    doc, checks: JSON.parse(JSON.stringify(checks)),
+    meta: {
+      market: document.getElementById('meta-market').value,
+      date,
+      redator: document.getElementById('meta-redator').value,
+      diagramador: document.getElementById('meta-diagramador').value,
+      revisor: document.getElementById('meta-revisor').value
+    }
+  };
+  try {
+    const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+    document.getElementById('share-preview-link').textContent = window.location.href.split('?')[0] + '?qc=' + encoded;
+  } catch(e) {
+    document.getElementById('share-preview-link').textContent = '(Link indisponível — dados muito grandes)';
+  }
+
+  switchShareTab('email', document.querySelectorAll('.share-tab')[0]);
+  document.getElementById('modal-share').classList.add('open');
+}
+
+function executarShare() {
+  if (shareTab === 'email') {
+    const to = document.getElementById('gestor-email').value;
+    const msg = document.getElementById('gestor-msg').value;
+    const doc = document.getElementById('meta-doc').value || 'Documento';
+    const body = (msg ? msg + '\n\n' : '') + buildReportText('email');
+    const subject = encodeURIComponent(`[QC] Checklist de qualidade — ${doc}`);
+    const bodyEnc = encodeURIComponent(body);
+    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${bodyEnc}`;
+  } else if (shareTab === 'texto') {
+    navigator.clipboard.writeText(buildReportText('wa')).then(() => showToast());
+  } else {
+    const link = document.getElementById('share-preview-link').textContent;
+    navigator.clipboard.writeText(link).then(() => showToast());
+  }
+}
+
+function showToast() {
+  const t = document.getElementById('copy-toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function closeShareModal() { document.getElementById('modal-share').classList.remove('open'); }
+document.getElementById('modal-share').addEventListener('click', e => { if (e.target === document.getElementById('modal-share')) closeShareModal(); });
 
 function renderAll() {
   renderStats();
-  renderModules();
+  renderSections();
+  renderSectionNav();
+  renderShareBar();
 }
 
-// Init
-document.getElementById('view-timeline').style.display = 'none';
-document.getElementById('view-certs').style.display = 'none';
+// HISTORY
+function finalizarChecklist() {
+  const answered = countAnswered();
+  const total = totalItems();
+  if (answered < total * 0.5) {
+    alert('Preencha pelo menos 50% dos itens antes de finalizar.');
+    return;
+  }
+  const doc = document.getElementById('meta-doc').value || 'Documento sem título';
+  const market = document.getElementById('meta-market').value || '—';
+  const date = document.getElementById('meta-date').value || new Date().toISOString().split('T')[0];
+  const redator = document.getElementById('meta-redator').value || '—';
+  const diagramador = document.getElementById('meta-diagramador').value || '—';
+  const revisor = document.getElementById('meta-revisor').value || '—';
+
+  const snapshot = {
+    id: Date.now(),
+    doc, market, date, redator, diagramador, revisor,
+    checks: JSON.parse(JSON.stringify(checks)),
+    yes: countYes(), no: countNo(), answered, total
+  };
+  history.unshift(snapshot);
+  localStorage.setItem('qc-history', JSON.stringify(history));
+  document.getElementById('hist-count').textContent = history.length;
+
+  // Reset active
+  checks = {};
+  localStorage.setItem('qc-checks', JSON.stringify(checks));
+  ['meta-doc','meta-market','meta-redator','meta-diagramador','meta-revisor'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('meta-date').value = '';
+  renderAll();
+  alert(`Checklist salvo com sucesso!\n✅ ${snapshot.yes} aprovados · ❌ ${snapshot.no} pendências`);
+}
+
+function confirmReset() {
+  if (confirm('Reiniciar checklist? Os dados não salvos serão perdidos.')) {
+    checks = {};
+    localStorage.setItem('qc-checks', JSON.stringify(checks));
+    renderAll();
+  }
+}
+
+function renderHistory() {
+  document.getElementById('hist-count').textContent = history.length;
+  const container = document.getElementById('history-list');
+  if (history.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📂</div><div>Nenhum checklist salvo ainda</div><div style="font-size:12px; margin-top:6px;">Finalize um checklist para vê-lo aqui</div></div>`;
+    return;
+  }
+  container.innerHTML = history.map((h,i) => {
+    const pct = Math.round((h.yes / h.total)*100);
+    const color = pct >= 90 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--red)';
+    const bg = pct >= 90 ? 'var(--green-bg)' : pct >= 60 ? 'var(--amber-bg)' : 'var(--red-bg)';
+    const border = pct >= 90 ? 'var(--green-border)' : pct >= 60 ? 'var(--amber-border)' : 'var(--red-border)';
+    return `<div class="hist-card" onclick="showHistDetail(${i})">
+      <div class="hist-left">
+        <div class="hist-title">${h.doc}</div>
+        <div class="hist-meta">${h.date} · ${h.market} · ✅ ${h.yes} aprovados · ❌ ${h.no} pendências</div>
+        <div class="hist-meta" style="margin-top:2px;">Redator: ${h.redator} &nbsp;·&nbsp; Diagramador: ${h.diagramador} &nbsp;·&nbsp; Revisor: ${h.revisor}</div>
+      </div>
+      <div class="hist-right">
+        <span class="hist-badge" style="background:${bg}; color:${color}; border:1px solid ${border};">${pct}% OK</span>
+        <span class="hist-del" onclick="deleteHist(event,${i})">Excluir</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteHist(e, i) {
+  e.stopPropagation();
+  if (confirm('Excluir este registro?')) {
+    history.splice(i, 1);
+    localStorage.setItem('qc-history', JSON.stringify(history));
+    renderHistory();
+  }
+}
+
+function showHistDetail(i) {
+  const h = history[i];
+  document.getElementById('modal-title').textContent = h.doc;
+  document.getElementById('modal-sub').textContent = `${h.date} · ${h.market} · ${h.answered}/${h.total} itens respondidos`;
+
+  let body = `<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px; font-size:12px;">
+    <div style="background:var(--surface2); border-radius:8px; padding:10px;"><div style="color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:3px;">Redator</div>${h.redator}</div>
+    <div style="background:var(--surface2); border-radius:8px; padding:10px;"><div style="color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:3px;">Diagramador</div>${h.diagramador}</div>
+    <div style="background:var(--surface2); border-radius:8px; padding:10px;"><div style="color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:3px;">Revisor</div>${h.revisor}</div>
+  </div>`;
+
+  SECTIONS.forEach(s => {
+    body += `<div class="modal-section-title" style="color:${s.color}">${s.num}. ${s.title}</div>`;
+    s.items.forEach((it, idx) => {
+      const y = h.checks[`${s.id}-${idx}-sim`];
+      const n = h.checks[`${s.id}-${idx}-nao`];
+      const r = h.checks[`${s.id}-${idx}-revisor`];
+      body += `<div class="modal-row">
+        <div class="modal-dot" style="background:${y ? 'var(--green)' : n ? 'var(--red)' : 'var(--muted)'}"></div>
+        <div class="modal-item">${it.label}</div>
+        <div class="modal-chips">
+          ${y ? '<span class="chip chip-y">SIM</span>' : ''}
+          ${n ? '<span class="chip chip-n">NÃO</span>' : ''}
+          ${r ? '<span class="chip chip-r">REV</span>' : ''}
+          ${!y && !n && !r ? '<span class="chip chip-e">—</span>' : ''}
+        </div>
+      </div>`;
+    });
+  });
+
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal(); });
+
+function showView(view, navEl) {
+  document.getElementById('view-checklist').style.display = view === 'checklist' ? '' : 'none';
+  document.getElementById('view-history').style.display = view === 'history' ? '' : 'none';
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  if (view === 'history') renderHistory();
+}
+
+// Set today's date
+document.getElementById('meta-date').value = new Date().toISOString().split('T')[0];
+
+// Re-evaluate share bar whenever meta fields change
+['meta-doc','meta-market','meta-redator','meta-diagramador','meta-revisor','meta-date'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    renderShareBar();
+    if (id === 'meta-revisor') renderSections();
+  });
+});
+
+document.getElementById('hist-count').textContent = history.length;
 renderAll();
 </script>
 </body>
