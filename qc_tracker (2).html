@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QC Tracker — Controle de Qualidade</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1e2333;
+  --surface3: #232840;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaf0;
+  --muted: #7a8099;
+  --accent: #5b6af0;
+  --accent-light: rgba(91,106,240,0.13);
+  --accent-glow: rgba(91,106,240,0.28);
+  --green: #22c98b;
+  --green-bg: rgba(34,201,139,0.12);
+  --green-border: rgba(34,201,139,0.25);
+  --red: #f06060;
+  --red-bg: rgba(240,96,96,0.12);
+  --red-border: rgba(240,96,96,0.25);
+  --amber: #f5a623;
+  --amber-bg: rgba(245,166,35,0.12);
+  --amber-border: rgba(245,166,35,0.25);
+  --purple: #a78bfa;
+  --purple-bg: rgba(167,139,250,0.12);
+  --teal: #2dd4bf;
+  --teal-bg: rgba(45,212,191,0.12);
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+
+.app { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
+.logo { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.logo-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.logo-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.logo-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--amber-bg); color: var(--amber); font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 8px; border: 1px solid var(--amber-border); }
+.nav-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; padding: 0 20px; margin: 14px 0 6px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; cursor: pointer; color: var(--muted); font-size: 13px; transition: all 0.15s; border-left: 2px solid transparent; }
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--accent); background: var(--accent-light); border-left-color: var(--accent); font-weight: 500; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.nav-count { margin-left: auto; font-size: 10px; padding: 1px 7px; border-radius: 20px; background: var(--surface2); color: var(--muted); }
+.sidebar-footer { margin-top: auto; padding: 16px 20px 0; border-top: 1px solid var(--border); }
+.sf-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.sf-bar { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+.sf-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--green)); transition: width 0.4s; }
+
+/* MAIN */
+.main { padding: 32px 36px; overflow-y: auto; max-width: 1100px; }
+.page-header { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.ph-left {}
+.page-title { font-size: 22px; font-weight: 600; }
+.page-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.btn { padding: 7px 16px; font-size: 12px; font-weight: 500; border-radius: var(--radius); border: 1px solid var(--border2); background: var(--surface); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn:hover { background: var(--surface2); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-danger { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+.btn-danger:hover { opacity: 0.8; }
+
+/* META FORM */
+.meta-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 24px; }
+.meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.meta-field { display: flex; flex-direction: column; gap: 6px; }
+.meta-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.7px; text-transform: uppercase; }
+.meta-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; font-family: inherit; }
+.meta-input:focus { border-color: var(--accent); }
+.meta-input::placeholder { color: var(--muted); }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 24px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.stat-val { font-size: 22px; font-weight: 600; }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.stat.s-green { border-color: var(--green-border); }
+.stat.s-green .stat-val { color: var(--green); }
+.stat.s-red { border-color: var(--red-border); }
+.stat.s-red .stat-val { color: var(--red); }
+.stat.s-amber { border-color: var(--amber-border); }
+.stat.s-amber .stat-val { color: var(--amber); }
+.stat.s-accent { border-color: var(--accent-glow); background: var(--accent-light); }
+.stat.s-accent .stat-val { color: var(--accent); }
+
+/* SECTION */
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden; }
+.section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.12s; user-select: none; }
+.section-header:hover { background: rgba(255,255,255,0.02); }
+.sh-left { display: flex; align-items: center; gap: 12px; }
+.sh-num { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.sh-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.sh-right { display: flex; align-items: center; gap: 10px; }
+.sh-progress { font-size: 11px; color: var(--muted); }
+.sh-pill { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+.sh-chevron { color: var(--muted); font-size: 16px; transition: transform 0.2s; }
+.section.collapsed .sh-chevron { transform: rotate(-90deg); }
+.section.collapsed .section-body { display: none; }
+
+/* TABLE */
+.section-body { padding: 0; }
+.qc-table { width: 100%; border-collapse: collapse; }
+.qc-table thead tr { border-bottom: 1px solid var(--border2); }
+.qc-table th { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; padding: 10px 16px; text-align: left; }
+.qc-table th.col-check { text-align: center; width: 72px; }
+.qc-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.qc-table tbody tr:last-child { border-bottom: none; }
+.qc-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.qc-table td { padding: 10px 16px; font-size: 13px; color: var(--text); vertical-align: middle; }
+.qc-table td.col-item { color: var(--text); }
+.qc-table td.col-check { text-align: center; }
+
+/* CHECKBOX TRIPLE */
+.check-group { display: flex; justify-content: center; }
+.tri-check { display: flex; gap: 0; }
+.tri-btn { width: 34px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); transition: all 0.13s; font-size: 11px; font-weight: 600; color: var(--muted); }
+.tri-btn:first-child { border-radius: 7px 0 0 7px; border-right: none; }
+.tri-btn:last-child { border-radius: 0 7px 7px 0; }
+.tri-btn.yes.active { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+.tri-btn.no.active { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+.tri-btn.rev.active { background: var(--purple-bg); border-color: rgba(167,139,250,0.3); color: var(--purple); }
+.tri-btn:hover:not(.active) { background: var(--surface3); color: var(--text); }
+
+/* ROLES header */
+.role-header { display: flex; gap: 0; }
+.role-th { width: 34px; font-size: 9px; font-weight: 700; text-align: center; color: var(--muted); letter-spacing: 0.5px; }
+
+/* N/A row */
+.na-indicator { font-size: 10px; color: var(--muted); opacity: 0.5; font-style: italic; }
+
+/* HISTORY VIEW */
+#view-history { display: none; }
+.hist-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; cursor: pointer; transition: border-color 0.15s; }
+.hist-card:hover { border-color: var(--border2); }
+.hist-left {}
+.hist-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.hist-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.hist-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.hist-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.hist-del { font-size: 11px; color: var(--red); background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+.hist-del:hover { opacity: 0.8; }
+.empty-state { text-align: center; padding: 56px 24px; color: var(--muted); }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+/* PRINT / EXPORT */
+.export-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 28px 32px; max-width: 560px; width: 90%; }
+.modal-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.modal-body { max-height: 360px; overflow-y: auto; font-size: 13px; line-height: 1.9; color: var(--text); }
+.modal-footer { margin-top: 20px; display: flex; gap: 8px; justify-content: flex-end; }
+.modal-section-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin: 14px 0 6px; }
+.modal-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.modal-row:last-child { border-bottom: none; }
+.modal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.modal-item { flex: 1; font-size: 12px; }
+.modal-chips { display: flex; gap: 4px; flex-shrink: 0; }
+.chip { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+.chip-y { background: var(--green-bg); color: var(--green); }
+.chip-n { background: var(--red-bg); color: var(--red); }
+.chip-r { background: var(--purple-bg); color: var(--purple); }
+.chip-e { background: var(--surface2); color: var(--muted); }
+
+/* SHARE BAR */
+.share-bar { margin-top: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; transition: border-color 0.3s; }
+.share-bar.ready { border-color: var(--green-border); background: var(--green-bg); }
+.share-bar-left { display: flex; align-items: center; gap: 14px; }
+.share-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: var(--surface2); transition: background 0.3s; }
+.share-bar.ready .share-icon { background: rgba(34,201,139,0.2); }
+.share-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.share-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.share-bar.ready .share-sub { color: var(--green); }
+.btn-share { padding: 10px 22px; font-size: 13px; font-weight: 600; border-radius: var(--radius); border: none; cursor: not-allowed; transition: all 0.25s; background: var(--surface2); color: var(--muted); opacity: 0.5; white-space: nowrap; }
+.btn-share.enabled { background: var(--green); color: #fff; opacity: 1; cursor: pointer; box-shadow: 0 0 0 0 rgba(34,201,139,0.4); animation: pulse-green 2s infinite; }
+.btn-share.enabled:hover { opacity: 0.88; animation: none; }
+@keyframes pulse-green { 0%,100% { box-shadow: 0 0 0 0 rgba(34,201,139,0.35); } 50% { box-shadow: 0 0 0 6px rgba(34,201,139,0); } }
+.share-checklist { display: flex; gap: 6px; flex-wrap: wrap; }
+.share-check-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+.share-check-item.ok { color: var(--green); }
+.share-check-item .sc-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* SHARE MODAL */
+.share-modal { max-width: 620px; }
+.share-modal .modal-body { font-size: 13px; }
+.email-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.email-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.7px; text-transform: uppercase; }
+.email-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 9px 13px; color: var(--text); font-size: 13px; outline: none; font-family: inherit; width: 100%; }
+.email-input:focus { border-color: var(--accent); }
+.email-input::placeholder { color: var(--muted); }
+.share-preview { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-size: 12px; line-height: 1.8; color: var(--text); max-height: 240px; overflow-y: auto; margin-top: 12px; white-space: pre-wrap; font-family: 'Courier New', monospace; }
+.share-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.share-tab { padding: 5px 14px; font-size: 12px; border: 1px solid var(--border2); border-radius: 20px; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.13s; }
+.share-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.copy-toast { display: none; font-size: 11px; color: var(--green); margin-left: 8px; }
+.copy-toast.show { display: inline; }
+
+@media print {
+  .sidebar, .header-actions, .export-bar, .btn, .modal-overlay, .share-bar { display: none !important; }
+  .app { grid-template-columns: 1fr; }
+  .main { padding: 16px; }
+  .section.collapsed .section-body { display: block !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-eyebrow">Qualidade</div>
+    <div class="logo-title">QC Tracker</div>
+    <div class="logo-sub">Controle de qualidade de tarefas</div>
+    <span class="logo-badge">✦ Editorial &amp; Técnico</span>
+  </div>
+
+  <div class="nav-label">Visualizações</div>
+  <div class="nav-item active" onclick="showView('checklist', this)">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="2.5" width="10" height="1.2" rx="0.6" fill="currentColor"/><rect x="1.5" y="5.9" width="10" height="1.2" rx="0.6" fill="currentColor"/><rect x="1.5" y="9.3" width="7" height="1.2" rx="0.6" fill="currentColor"/><rect x="11" y="8.5" width="2.5" height="4" rx="0.5" fill="currentColor" opacity=".4"/><rect x="9.5" y="10" width="2.5" height="2.5" rx="0.5" fill="currentColor"/></svg>
+    Checklist ativo
+  </div>
+  <div class="nav-item" onclick="showView('history', this)">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 4.5v3l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Histórico
+    <span class="nav-count" id="hist-count">0</span>
+  </div>
+
+  <div class="nav-label" style="margin-top:8px;">Seções</div>
+  <div id="section-nav"></div>
+
+  <div class="sidebar-footer">
+    <div class="sf-label"><span>Progresso</span><span id="pct-sidebar">0%</span></div>
+    <div class="sf-bar"><div class="sf-fill" id="bar-sidebar" style="width:0%"></div></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- CHECKLIST VIEW -->
+  <div id="view-checklist">
+    <div class="page-header">
+      <div class="ph-left">
+        <div class="page-title">Controle de Qualidade</div>
+        <div class="page-sub">Preencha os profissionais e marque cada item antes de finalizar</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn" onclick="window.print()">↓ Imprimir</button>
+        <button class="btn btn-danger" onclick="confirmReset()">Reiniciar</button>
+        <button class="btn btn-primary" onclick="finalizarChecklist()">Finalizar e salvar ↗</button>
+      </div>
+    </div>
+
+    <!-- META -->
+    <div class="meta-card">
+      <div class="meta-grid">
+        <div class="meta-field">
+          <label class="meta-label">Documento / Projeto</label>
+          <input class="meta-input" id="meta-doc" placeholder="Ex: Manual do proprietário — Fiat Pulse 2025" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Mercado / País-alvo</label>
+          <input class="meta-input" id="meta-market" placeholder="Ex: Brasil — PT-BR" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Data</label>
+          <input class="meta-input" id="meta-date" type="date" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Redator</label>
+          <input class="meta-input" id="meta-redator" placeholder="Nome completo" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Diagramador</label>
+          <input class="meta-input" id="meta-diagramador" placeholder="Nome completo" />
+        </div>
+        <div class="meta-field">
+          <label class="meta-label">Revisor</label>
+          <input class="meta-input" id="meta-revisor" placeholder="Nome completo" />
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats" id="stats-row"></div>
+
+    <!-- SECTIONS -->
+    <div id="sections-container"></div>
+
+    <!-- SHARE BAR -->
+    <div class="share-bar" id="share-bar">
+      <div class="share-bar-left">
+        <div class="share-icon" id="share-icon">📋</div>
+        <div>
+          <div class="share-title">Compartilhar com gestor</div>
+          <div class="share-sub" id="share-sub">Preencha todos os itens para habilitar o envio</div>
+          <div class="share-checklist" id="share-checklist" style="margin-top:6px;"></div>
+        </div>
+      </div>
+      <button class="btn-share" id="btn-share" disabled onclick="abrirModalShare()">Compartilhar ↗</button>
+    </div>
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div id="view-history">
+    <div class="page-header">
+      <div class="ph-left">
+        <div class="page-title">Histórico de checklists</div>
+        <div class="page-sub">Registros salvos neste navegador</div>
+      </div>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
+</main>
+</div>
+
+<!-- MODAL COMPARTILHAR -->
+<div class="modal-overlay" id="modal-share">
+  <div class="modal share-modal">
+    <div class="modal-title">Compartilhar com gestor</div>
+    <div class="modal-sub" id="share-modal-sub">Escolha como deseja enviar o relatório</div>
+    <div class="share-tabs">
+      <button class="share-tab active" onclick="switchShareTab('email', this)">E-mail</button>
+      <button class="share-tab" onclick="switchShareTab('texto', this)">Texto / WhatsApp</button>
+      <button class="share-tab" onclick="switchShareTab('link', this)">Link direto</button>
+    </div>
+    <div id="share-tab-email">
+      <div class="email-field">
+        <label class="email-label">E-mail do gestor</label>
+        <input class="email-input" id="gestor-email" type="email" placeholder="gestor@empresa.com" />
+      </div>
+      <div class="email-field">
+        <label class="email-label">Mensagem adicional (opcional)</label>
+        <input class="email-input" id="gestor-msg" placeholder="Ex: Segue checklist do manual Pulse 2025 para aprovação." />
+      </div>
+      <div class="share-preview" id="share-preview-email"></div>
+    </div>
+    <div id="share-tab-texto" style="display:none;">
+      <div class="share-preview" id="share-preview-texto"></div>
+    </div>
+    <div id="share-tab-link" style="display:none;">
+      <div style="font-size:13px; color:var(--muted); margin-bottom:10px;">Copie o link abaixo e envie pelo canal de sua preferência. O relatório completo está codificado na URL.</div>
+      <div class="share-preview" id="share-preview-link" style="word-break:break-all; font-size:11px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeShareModal()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-share-action" onclick="executarShare()">Abrir no cliente de e-mail ↗</button>
+      <span class="copy-toast" id="copy-toast">✓ Copiado!</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Resumo do checklist</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SECTIONS = [
+  {
+    id: 's1', num: 1, title: 'Padronização e Formatação',
+    color: '#5b6af0', colorBg: 'rgba(91,106,240,0.15)',
+    items: [
+      { label: 'Documento segue o template oficial do brand', roles: ['sim','nao','revisor'] },
+      { label: 'Fonte, tamanhos e espaçamentos padronizados', roles: ['sim','nao','revisor'] },
+      { label: 'Numeração de páginas correta', roles: ['sim','nao','revisor'] },
+      { label: 'Nomes de capítulos e seções estão corretos — não faltam páginas ou conteúdo', roles: ['sim','nao','revisor'] },
+      { label: 'Tabelas com título e alinhadas', roles: ['sim','nao','revisor'] },
+      { label: 'Imagens com resolução mínima (300 dpi)', roles: ['sim','nao'] },
+      { label: 'Capítulos seguem a ordem', roles: ['sim','nao','revisor'] },
+    ]
+  },
+  {
+    id: 's2', num: 2, title: 'Terminologia',
+    color: '#2dd4bf', colorBg: 'rgba(45,212,191,0.15)',
+    items: [
+      { label: 'Assuntos legislativos específicos de mercado (termos localizados)', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's3', num: 3, title: 'Texto e Redação',
+    color: '#a78bfa', colorBg: 'rgba(167,139,250,0.15)',
+    items: [
+      { label: 'Ortografia e pontuação revisada', roles: ['sim','nao','revisor'] },
+      { label: 'Traduções completas e corretas (presença de texto em outro idioma)', roles: ['sim','nao','revisor'] },
+      { label: 'Índice testado aleatoriamente', roles: ['sim','nao','revisor'] },
+    ]
+  },
+  {
+    id: 's4', num: 4, title: 'Conteúdo Técnico',
+    color: '#f5a623', colorBg: 'rgba(245,166,35,0.15)',
+    items: [
+      { label: 'Especificações corretas conforme ficha técnica', roles: ['sim','nao'] },
+      { label: 'Versões corretas conforme Griglia / Decli / Descritivo de Produto', roles: ['sim','nao'] },
+      { label: 'Plano de Manutenção checado e ilustrações corretamente referenciadas com a legenda', roles: ['sim','nao','revisor'] },
+      { label: 'Fotos coerentes com o modelo descrito', roles: ['sim','nao','revisor'] },
+      { label: 'Lubrificantes seguem marca oficial da fabricante', roles: ['sim','nao'] },
+      { label: 'Desenho da caixa de fusíveis fornecido', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's5', num: 5, title: 'Segurança',
+    color: '#f06060', colorBg: 'rgba(240,96,96,0.15)',
+    items: [
+      { label: 'Advertências padronizadas', roles: ['sim','nao'] },
+      { label: 'Normas de transporte de crianças conforme mercado', roles: ['sim','nao','revisor'] },
+      { label: 'Riscos mecânicos, elétricos e químicos contemplados', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's6', num: 6, title: 'Revisão Final',
+    color: '#22c98b', colorBg: 'rgba(34,201,139,0.15)',
+    items: [
+      { label: 'Revisão do layout do PDF final', roles: ['sim','nao','revisor'] },
+      { label: 'Arquivo salvo no repositório oficial', roles: ['sim','nao'] },
+      { label: 'Aplicado controle para busca de brand trocado (FIAT/JEEP/RAM)', roles: ['sim','nao','revisor'] },
+    ]
+  },
+  {
+    id: 's7', num: 7, title: 'Testes Práticos',
+    color: '#f5a623', colorBg: 'rgba(245,166,35,0.15)',
+    items: [
+      { label: 'Procedimentos testados no produto real', roles: ['sim','nao'] },
+      { label: 'Presença do veículo na empresa', roles: ['sim','nao'] },
+    ]
+  },
+  {
+    id: 's8', num: 8, title: 'Conformidade Local',
+    color: '#5b6af0', colorBg: 'rgba(91,106,240,0.15)',
+    items: [
+      { label: 'Idioma ajustado ao país-alvo', roles: ['sim','nao'] },
+      { label: 'Termos técnicos verificados', roles: ['sim','nao'] },
+      { label: 'Normas legais aplicáveis atendidas', roles: ['sim','nao'] },
+    ]
+  }
+];
+
+const ROLE_LABELS = { sim: 'S', nao: 'N', revisor: 'R' };
+const ROLE_TITLES = { sim: 'SIM', nao: 'NÃO', revisor: 'REVISOR' };
+
+let checks = JSON.parse(localStorage.getItem('qc-checks') || '{}');
+let history = JSON.parse(localStorage.getItem('qc-history') || '[]');
+let collapsed = {};
+
+function key(sid, idx, role) { return `${sid}-${idx}-${role}`; }
+
+function getCheck(sid, idx, role) { return checks[key(sid,idx,role)] || false; }
+function setCheck(sid, idx, role, val) {
+  checks[key(sid,idx,role)] = val;
+  localStorage.setItem('qc-checks', JSON.stringify(checks));
+}
+
+function toggle(sid, idx, role) {
+  const k = key(sid,idx,role);
+  const isActive = checks[k];
+  // clear sibling roles on yes/no toggle for mutual exclusion between yes and no
+  if (role === 'sim' || role === 'nao') {
+    const other = role === 'sim' ? 'nao' : 'sim';
+    checks[key(sid,idx,other)] = false;
+  }
+  checks[k] = !isActive;
+  localStorage.setItem('qc-checks', JSON.stringify(checks));
+  renderAll();
+}
+
+function totalItems() { return SECTIONS.reduce((a,s) => a + s.items.length, 0); }
+
+function countAnswered() {
+  let n = 0;
+  SECTIONS.forEach(s => s.items.forEach((it, idx) => {
+    if (it.roles.some(r => getCheck(s.id, idx, r))) n++;
+  }));
+  return n;
+}
+
+function countYes() {
+  let n = 0;
+  SECTIONS.forEach(s => s.items.forEach((it, idx) => {
+    if (getCheck(s.id, idx, 'sim')) n++;
+  }));
+  return n;
+}
+
+function countNo() {
+  let n = 0;
+  SECTIONS.forEach(s => s.items.forEach((it, idx) => {
+    if (getCheck(s.id, idx, 'nao')) n++;
+  }));
+  return n;
+}
+
+function sectionProgress(s) {
+  const total = s.items.length;
+  const done = s.items.filter((it,idx) => it.roles.some(r => getCheck(s.id,idx,r))).length;
+  return { done, total, pct: Math.round((done/total)*100) };
+}
+
+function renderStats() {
+  const total = totalItems();
+  const answered = countAnswered();
+  const yes = countYes();
+  const no = countNo();
+  const pct = Math.round((answered/total)*100);
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat s-accent"><div class="stat-val">${pct}%</div><div class="stat-lbl">Concluído</div></div>
+    <div class="stat"><div class="stat-val">${answered}/${total}</div><div class="stat-lbl">Itens respondidos</div></div>
+    <div class="stat s-green"><div class="stat-val">${yes}</div><div class="stat-lbl">Aprovados (SIM)</div></div>
+    <div class="stat s-red"><div class="stat-val">${no}</div><div class="stat-lbl">Pendências (NÃO)</div></div>
+    <div class="stat s-amber"><div class="stat-val">${SECTIONS.length}</div><div class="stat-lbl">Seções</div></div>
+  `;
+  document.getElementById('pct-sidebar').textContent = pct + '%';
+  document.getElementById('bar-sidebar').style.width = pct + '%';
+}
+
+function renderSectionNav() {
+  const nav = document.getElementById('section-nav');
+  nav.innerHTML = SECTIONS.map(s => {
+    const prog = sectionProgress(s);
+    return `<div class="nav-item" onclick="scrollToSection('${s.id}')">
+      <div class="nav-dot" style="background:${s.color}"></div>
+      <span style="flex:1">${s.num}. ${s.title}</span>
+      <span class="nav-count" style="background:${prog.pct===100 ? 'var(--green-bg)' : 'var(--surface2)'}; color:${prog.pct===100 ? 'var(--green)' : 'var(--muted)'};">${prog.done}/${prog.total}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderSections() {
+  const container = document.getElementById('sections-container');
+  container.innerHTML = SECTIONS.map(s => {
+    const prog = sectionProgress(s);
+    const pillColor = prog.pct === 100 ? 'var(--green)' : prog.pct > 0 ? 'var(--amber)' : 'var(--muted)';
+    const pillBg = prog.pct === 100 ? 'var(--green-bg)' : prog.pct > 0 ? 'var(--amber-bg)' : 'var(--surface2)';
+    const isCollapsed = collapsed[s.id];
+
+    const rowsHtml = s.items.map((it, idx) => {
+      const hasAny = it.roles.some(r => getCheck(s.id, idx, r));
+      return `<tr>
+        <td class="col-item">${it.label}</td>
+        <td class="col-check">
+          <div class="check-group">
+            <div class="tri-check">
+              ${it.roles.includes('sim') ? `<div class="tri-btn yes ${getCheck(s.id,idx,'sim') ? 'active' : ''}" onclick="toggle('${s.id}',${idx},'sim')" title="SIM">S</div>` : `<div class="tri-btn" style="opacity:0.2; cursor:default;">S</div>`}
+              ${it.roles.includes('nao') ? `<div class="tri-btn no ${getCheck(s.id,idx,'nao') ? 'active' : ''}" onclick="toggle('${s.id}',${idx},'nao')" title="NÃO">N</div>` : `<div class="tri-btn" style="opacity:0.2; cursor:default;">N</div>`}
+              ${it.roles.includes('revisor') ? (() => { const revName = document.getElementById('meta-revisor').value.trim(); const isRev = getCheck(s.id,idx,'revisor'); const firstName = revName ? revName.split(' ')[0] : ''; return `<div class="tri-btn rev ${isRev ? 'active' : ''}" onclick="toggle('${s.id}',${idx},'revisor')" title="${revName ? 'Revisor: ' + revName : 'REVISOR'}" style="${isRev && firstName ? 'width:auto; padding:0 10px; font-size:10px; letter-spacing:0.3px;' : ''}">${isRev && firstName ? firstName : 'R'}</div>`; })() : `<div class="tri-btn" style="opacity:0.2; cursor:default;">R</div>`}
+            </div>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    return `<div class="section ${isCollapsed ? 'collapsed' : ''}" id="sec-${s.id}">
+      <div class="section-header" onclick="toggleSection('${s.id}')">
+        <div class="sh-left">
+          <div class="sh-num" style="background:${s.colorBg}; color:${s.color};">${s.num}</div>
+          <div class="sh-title">${s.title}</div>
+        </div>
+        <div class="sh-right">
+          <span class="sh-progress">${prog.done}/${prog.total}</span>
+          <span class="sh-pill" style="background:${pillBg}; color:${pillColor};">${prog.pct}%</span>
+          <span class="sh-chevron">›</span>
+        </div>
+      </div>
+      <div class="section-body">
+        <table class="qc-table">
+          <thead>
+            <tr>
+              <th>Item de verificação</th>
+              <th class="col-check" title="S = SIM | N = NÃO | R = REVISOR">S &nbsp; N &nbsp; R</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSection(sid) {
+  collapsed[sid] = !collapsed[sid];
+  renderSections();
+}
+
+function scrollToSection(sid) {
+  collapsed[sid] = false;
+  renderSections();
+  setTimeout(() => {
+    const el = document.getElementById('sec-' + sid);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+function renderShareBar() {
+  const total = totalItems();
+  const answered = countAnswered();
+  const hasDoc = document.getElementById('meta-doc').value.trim().length > 0;
+  const hasGestor = true; // gestor email filled in modal
+  const allDone = answered === total;
+  const noItems = countNo();
+
+  const conditions = [
+    { label: `Todos os ${total} itens respondidos`, ok: allDone },
+    { label: 'Documento identificado', ok: hasDoc },
+  ];
+
+  document.getElementById('share-checklist').innerHTML = conditions.map(c =>
+    `<div class="share-check-item ${c.ok ? 'ok' : ''}"><div class="sc-dot"></div>${c.label}</div>`
+  ).join('');
+
+  const ready = allDone && hasDoc;
+  const bar = document.getElementById('share-bar');
+  const btn = document.getElementById('btn-share');
+  const sub = document.getElementById('share-sub');
+  const icon = document.getElementById('share-icon');
+
+  if (ready) {
+    bar.classList.add('ready');
+    btn.classList.add('enabled');
+    btn.disabled = false;
+    icon.textContent = '✅';
+    sub.textContent = noItems > 0
+      ? `${noItems} pendência(s) encontrada(s) — gestor será notificado`
+      : 'Checklist 100% aprovado — pronto para enviar';
+  } else {
+    bar.classList.remove('ready');
+    btn.classList.remove('enabled');
+    btn.disabled = true;
+    icon.textContent = '📋';
+    const remaining = total - answered;
+    sub.textContent = remaining > 0
+      ? `Faltam ${remaining} item(ns) para habilitar o envio`
+      : 'Identifique o documento para habilitar o envio';
+  }
+}
+
+function buildReportText(format) {
+  const doc = document.getElementById('meta-doc').value || 'Documento';
+  const market = document.getElementById('meta-market').value || '—';
+  const date = document.getElementById('meta-date').value || new Date().toISOString().split('T')[0];
+  const redator = document.getElementById('meta-redator').value || '—';
+  const diagramador = document.getElementById('meta-diagramador').value || '—';
+  const revisor = document.getElementById('meta-revisor').value || '—';
+  const yes = countYes(), no = countNo(), total = totalItems();
+  const pct = Math.round((yes/total)*100);
+
+  let lines = [];
+  if (format === 'email') {
+    lines.push(`RELATÓRIO DE CONTROLE DE QUALIDADE`);
+    lines.push(`═══════════════════════════════════`);
+    lines.push(`Documento: ${doc}`);
+    lines.push(`Mercado: ${market}   |   Data: ${date}`);
+    lines.push(`Redator: ${redator}   |   Diagramador: ${diagramador}   |   Revisor: ${revisor}`);
+    lines.push(`Resultado: ${pct}% aprovado — ✅ ${yes} OK  ❌ ${no} pendência(s)`);
+    lines.push(``);
+  } else {
+    lines.push(`*QC — ${doc}*`);
+    lines.push(`📅 ${date}  |  🌎 ${market}`);
+    lines.push(`👤 ${redator} / ${diagramador} / ${revisor}`);
+    lines.push(`📊 ${pct}% aprovado — ✅ ${yes}  ❌ ${no}`);
+    lines.push(``);
+  }
+
+  SECTIONS.forEach(s => {
+    lines.push(format === 'email' ? `▶ ${s.num}. ${s.title.toUpperCase()}` : `*${s.num}. ${s.title}*`);
+    s.items.forEach((it, idx) => {
+      const y = getCheck(s.id, idx, 'sim');
+      const n = getCheck(s.id, idx, 'nao');
+      const r = getCheck(s.id, idx, 'revisor');
+      const mark = y ? '✅' : n ? '❌' : '○';
+      const rev = r ? ' [REV]' : '';
+      lines.push(`  ${mark} ${it.label}${rev}`);
+    });
+    lines.push('');
+  });
+
+  if (no > 0) {
+    lines.push(format === 'email' ? `⚠ PENDÊNCIAS (${no} item(ns)):` : `*⚠ Pendências:*`);
+    SECTIONS.forEach(s => s.items.forEach((it,idx) => {
+      if (getCheck(s.id, idx, 'nao')) lines.push(`  ❌ ${it.label}`);
+    }));
+  }
+  return lines.join('\n');
+}
+
+let shareTab = 'email';
+function switchShareTab(tab, btn) {
+  shareTab = tab;
+  document.querySelectorAll('.share-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('share-tab-email').style.display = tab === 'email' ? '' : 'none';
+  document.getElementById('share-tab-texto').style.display = tab === 'texto' ? '' : 'none';
+  document.getElementById('share-tab-link').style.display = tab === 'link' ? '' : 'none';
+  const actionBtn = document.getElementById('btn-share-action');
+  if (tab === 'email') { actionBtn.textContent = 'Abrir no cliente de e-mail ↗'; }
+  else if (tab === 'texto') { actionBtn.textContent = 'Copiar texto'; }
+  else { actionBtn.textContent = 'Copiar link'; }
+}
+
+function abrirModalShare() {
+  const doc = document.getElementById('meta-doc').value || 'Documento';
+  const date = document.getElementById('meta-date').value || new Date().toISOString().split('T')[0];
+  document.getElementById('share-modal-sub').textContent = `${doc} · ${date}`;
+
+  const emailText = buildReportText('email');
+  const waText = buildReportText('wa');
+
+  document.getElementById('share-preview-email').textContent = emailText;
+  document.getElementById('share-preview-texto').textContent = waText;
+
+  // Build link (data URI with encoded state)
+  const payload = {
+    doc, checks: JSON.parse(JSON.stringify(checks)),
+    meta: {
+      market: document.getElementById('meta-market').value,
+      date,
+      redator: document.getElementById('meta-redator').value,
+      diagramador: document.getElementById('meta-diagramador').value,
+      revisor: document.getElementById('meta-revisor').value
+    }
+  };
+  try {
+    const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+    document.getElementById('share-preview-link').textContent = window.location.href.split('?')[0] + '?qc=' + encoded;
+  } catch(e) {
+    document.getElementById('share-preview-link').textContent = '(Link indisponível — dados muito grandes)';
+  }
+
+  switchShareTab('email', document.querySelectorAll('.share-tab')[0]);
+  document.getElementById('modal-share').classList.add('open');
+}
+
+function executarShare() {
+  if (shareTab === 'email') {
+    const to = document.getElementById('gestor-email').value;
+    const msg = document.getElementById('gestor-msg').value;
+    const doc = document.getElementById('meta-doc').value || 'Documento';
+    const body = (msg ? msg + '\n\n' : '') + buildReportText('email');
+    const subject = encodeURIComponent(`[QC] Checklist de qualidade — ${doc}`);
+    const bodyEnc = encodeURIComponent(body);
+    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${bodyEnc}`;
+  } else if (shareTab === 'texto') {
+    navigator.clipboard.writeText(buildReportText('wa')).then(() => showToast());
+  } else {
+    const link = document.getElementById('share-preview-link').textContent;
+    navigator.clipboard.writeText(link).then(() => showToast());
+  }
+}
+
+function showToast() {
+  const t = document.getElementById('copy-toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function closeShareModal() { document.getElementById('modal-share').classList.remove('open'); }
+document.getElementById('modal-share').addEventListener('click', e => { if (e.target === document.getElementById('modal-share')) closeShareModal(); });
+
+function renderAll() {
+  renderStats();
+  renderSections();
+  renderSectionNav();
+  renderShareBar();
+}
+
+// HISTORY
+function finalizarChecklist() {
+  const answered = countAnswered();
+  const total = totalItems();
+  if (answered < total * 0.5) {
+    alert('Preencha pelo menos 50% dos itens antes de finalizar.');
+    return;
+  }
+  const doc = document.getElementById('meta-doc').value || 'Documento sem título';
+  const market = document.getElementById('meta-market').value || '—';
+  const date = document.getElementById('meta-date').value || new Date().toISOString().split('T')[0];
+  const redator = document.getElementById('meta-redator').value || '—';
+  const diagramador = document.getElementById('meta-diagramador').value || '—';
+  const revisor = document.getElementById('meta-revisor').value || '—';
+
+  const snapshot = {
+    id: Date.now(),
+    doc, market, date, redator, diagramador, revisor,
+    checks: JSON.parse(JSON.stringify(checks)),
+    yes: countYes(), no: countNo(), answered, total
+  };
+  history.unshift(snapshot);
+  localStorage.setItem('qc-history', JSON.stringify(history));
+  document.getElementById('hist-count').textContent = history.length;
+
+  // Reset active
+  checks = {};
+  localStorage.setItem('qc-checks', JSON.stringify(checks));
+  ['meta-doc','meta-market','meta-redator','meta-diagramador','meta-revisor'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('meta-date').value = '';
+  renderAll();
+  alert(`Checklist salvo com sucesso!\n✅ ${snapshot.yes} aprovados · ❌ ${snapshot.no} pendências`);
+}
+
+function confirmReset() {
+  if (confirm('Reiniciar checklist? Os dados não salvos serão perdidos.')) {
+    checks = {};
+    localStorage.setItem('qc-checks', JSON.stringify(checks));
+    renderAll();
+  }
+}
+
+function renderHistory() {
+  document.getElementById('hist-count').textContent = history.length;
+  const container = document.getElementById('history-list');
+  if (history.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📂</div><div>Nenhum checklist salvo ainda</div><div style="font-size:12px; margin-top:6px;">Finalize um checklist para vê-lo aqui</div></div>`;
+    return;
+  }
+  container.innerHTML = history.map((h,i) => {
+    const pct = Math.round((h.yes / h.total)*100);
+    const color = pct >= 90 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--red)';
+    const bg = pct >= 90 ? 'var(--green-bg)' : pct >= 60 ? 'var(--amber-bg)' : 'var(--red-bg)';
+    const border = pct >= 90 ? 'var(--green-border)' : pct >= 60 ? 'var(--amber-border)' : 'var(--red-border)';
+    return `<div class="hist-card" onclick="showHistDetail(${i})">
+      <div class="hist-left">
+        <div class="hist-title">${h.doc}</div>
+        <div class="hist-meta">${h.date} · ${h.market} · ✅ ${h.yes} aprovados · ❌ ${h.no} pendências</div>
+        <div class="hist-meta" style="margin-top:2px;">Redator: ${h.redator} &nbsp;·&nbsp; Diagramador: ${h.diagramador} &nbsp;·&nbsp; Revisor: ${h.revisor}</div>
+      </div>
+      <div class="hist-right">
+        <span class="hist-badge" style="background:${bg}; color:${color}; border:1px solid ${border};">${pct}% OK</span>
+        <span class="hist-del" onclick="deleteHist(event,${i})">Excluir</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteHist(e, i) {
+  e.stopPropagation();
+  if (confirm('Excluir este registro?')) {
+    history.splice(i, 1);
+    localStorage.setItem('qc-history', JSON.stringify(history));
+    renderHistory();
+  }
+}
+
+function showHistDetail(i) {
+  const h = history[i];
+  document.getElementById('modal-title').textContent = h.doc;
+  document.getElementById('modal-sub').textContent = `${h.date} · ${h.market} · ${h.answered}/${h.total} itens respondidos`;
+
+  let body = `<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px; font-size:12px;">
+    <div style="background:var(--surface2); border-radius:8px; padding:10px;"><div style="color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:3px;">Redator</div>${h.redator}</div>
+    <div style="background:var(--surface2); border-radius:8px; padding:10px;"><div style="color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:3px;">Diagramador</div>${h.diagramador}</div>
+    <div style="background:var(--surface2); border-radius:8px; padding:10px;"><div style="color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:3px;">Revisor</div>${h.revisor}</div>
+  </div>`;
+
+  SECTIONS.forEach(s => {
+    body += `<div class="modal-section-title" style="color:${s.color}">${s.num}. ${s.title}</div>`;
+    s.items.forEach((it, idx) => {
+      const y = h.checks[`${s.id}-${idx}-sim`];
+      const n = h.checks[`${s.id}-${idx}-nao`];
+      const r = h.checks[`${s.id}-${idx}-revisor`];
+      body += `<div class="modal-row">
+        <div class="modal-dot" style="background:${y ? 'var(--green)' : n ? 'var(--red)' : 'var(--muted)'}"></div>
+        <div class="modal-item">${it.label}</div>
+        <div class="modal-chips">
+          ${y ? '<span class="chip chip-y">SIM</span>' : ''}
+          ${n ? '<span class="chip chip-n">NÃO</span>' : ''}
+          ${r ? '<span class="chip chip-r">REV</span>' : ''}
+          ${!y && !n && !r ? '<span class="chip chip-e">—</span>' : ''}
+        </div>
+      </div>`;
+    });
+  });
+
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal(); });
+
+function showView(view, navEl) {
+  document.getElementById('view-checklist').style.display = view === 'checklist' ? '' : 'none';
+  document.getElementById('view-history').style.display = view === 'history' ? '' : 'none';
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  if (view === 'history') renderHistory();
+}
+
+// Set today's date
+document.getElementById('meta-date').value = new Date().toISOString().split('T')[0];
+
+// Re-evaluate share bar whenever meta fields change
+['meta-doc','meta-market','meta-redator','meta-diagramador','meta-revisor','meta-date'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    renderShareBar();
+    if (id === 'meta-revisor') renderSections();
+  });
+});
+
+document.getElementById('hist-count').textContent = history.length;
+renderAll();
+</script>
+</body>
+</html>
